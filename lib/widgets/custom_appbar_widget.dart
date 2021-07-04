@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:music_player/core/cache/app_shared_pref.dart';
 import 'package:provider/provider.dart';
 
 import '../core/init/notifier/theme_notifier.dart';
@@ -76,6 +77,9 @@ class CustomAppBarWidgetState extends State<CustomAppBarWidget> with SingleTicke
             icon: Icon(Icons.brightness_2),
             onPressed: () {
               context.read<ThemeNotifier>().changeTheme(context.read<ThemeNotifier>().isThemeLight() ? AppTheme.DARK : AppTheme.LIGHT);
+              /*SharedPreferences.getInstance()
+                  .then((value) => value.setString("theme", context.read<ThemeNotifier>().isThemeLight() ? "light" : "dark"));*/
+              //AppSharedPreferences.setString("theme", context.read<ThemeNotifier>().isThemeLight() ? "light" : "dark");
             },
           ),
         ))

@@ -82,7 +82,8 @@ class _SongListViewWidgetState extends State<SongListViewWidget> {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => ControlPanelView(
-              songInfo: songInfos[index],
+              songInfo: songInfos,
+              selectedIndex: index,
             ),
           ),
         );

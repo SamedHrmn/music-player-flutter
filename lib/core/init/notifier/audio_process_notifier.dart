@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:just_audio/just_audio.dart';
 
 class AudioProcessNotifier {
-  final String audioFilePath;
+  //final String audioFilePath;
+  final List<SongInfo> songList;
   AudioPlayer _audioPlayer;
+  final int selectedIndex;
 
   final progressNotifier = ValueNotifier<ProgressBarState>(
     ProgressBarState(
@@ -14,13 +17,21 @@ class AudioProcessNotifier {
   );
   final buttonNotifier = ValueNotifier<ButtonState>(ButtonState.playing);
 
-  AudioProcessNotifier({@required this.audioFilePath}) {
+  AudioProcessNotifier({@required this.selectedIndex, @required this.songList}) {
     _initPlayer();
+  }
+
+  List<AudioSource> getAllAudioSource() {
+    List<AudioSource> sources = [];
+    for (int i = 0; i < songList.length; i++) {
+      sources.add(AudioSource.uri(Uri.file(songList[i].filePath)));
+    }
+    return sources;
   }
 
   _initPlayer() async {
     _audioPlayer = AudioPlayer();
-    _audioPlayer.setAudioSource(AudioSource.uri(Uri.file(audioFilePath)));
+    _audioPlayer.setAudioSource(ConcatenatingAudioSource(children: getAllAudioSource()), initialIndex: selectedIndex);
     _audioPlayer.play();
 
     _audioPlayer.playerStateStream.listen((playerState) {
@@ -83,6 +94,10 @@ class AudioProcessNotifier {
 
   void dispose() {
     _audioPlayer.dispose();
+  }
+
+  void toNextSong() {
+    _audioPlayer.seekToNext();
   }
 }
 

@@ -3,6 +3,8 @@ import 'dart:ui';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
+import 'package:music_player/widgets/next_song_button_widget.dart';
+import 'package:music_player/widgets/previous_song_button_widget.dart';
 
 import '../core/constants/size_constants.dart';
 import '../core/extension/size_extension.dart';
@@ -13,9 +15,10 @@ import '../widgets/pause_button_widget.dart';
 import '../widgets/play_button_widget.dart';
 
 class ControlPanelView extends StatefulWidget {
-  final SongInfo songInfo;
+  final int selectedIndex;
+  final List<SongInfo> songInfo;
 
-  const ControlPanelView({Key key, @required this.songInfo}) : super(key: key);
+  const ControlPanelView({Key key, @required this.songInfo, @required this.selectedIndex}) : super(key: key);
 
   @override
   _ControlPanelViewState createState() => _ControlPanelViewState();
@@ -28,7 +31,7 @@ class _ControlPanelViewState extends State<ControlPanelView> {
   void initState() {
     super.initState();
 
-    _audioProcessNotifier = AudioProcessNotifier(audioFilePath: widget.songInfo.filePath);
+    _audioProcessNotifier = AudioProcessNotifier(songList: widget.songInfo, selectedIndex: widget.selectedIndex);
   }
 
   @override
@@ -53,13 +56,16 @@ class _ControlPanelViewState extends State<ControlPanelView> {
               child: appBar(),
             )),
             BlurBackgroundWidget(
-              songInfo: widget.songInfo,
+              songInfo: widget.songInfo[widget.selectedIndex],
             ),
             blurFilter(),
             Positioned.fill(
               child: Align(
                 alignment: Alignment.center,
-                child: playerUI(),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [AlbumUI(widget.songInfo[widget.selectedIndex]), songTextSection()],
+                ),
               ),
             ),
             Positioned.fill(
@@ -69,7 +75,17 @@ class _ControlPanelViewState extends State<ControlPanelView> {
                   padding: context.paddingAllLow,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    children: [_buildProgessBar(), buildPlayOrPauseMusicButton()],
+                    children: [
+                      _buildProgessBar(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          buildPreviousMusicButton(),
+                          buildPlayOrPauseMusicButton(),
+                          buildNextMusicButton(),
+                        ],
+                      )
+                    ],
                   ),
                 ),
               ),
@@ -78,6 +94,28 @@ class _ControlPanelViewState extends State<ControlPanelView> {
         ),
       ),
     ));
+  }
+
+  buildPreviousMusicButton() {
+    return PreviousSongButtonWidget(onTap: () async {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => ControlPanelView(
+          songInfo: widget.songInfo,
+          selectedIndex: widget.selectedIndex != 0 ? widget.selectedIndex - 1 : widget.songInfo.length - 1,
+        ),
+      ));
+    });
+  }
+
+  buildNextMusicButton() {
+    return NextSongButtonWidget(onTap: () async {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => ControlPanelView(
+          songInfo: widget.songInfo,
+          selectedIndex: widget.selectedIndex != widget.songInfo.length - 1 ? widget.selectedIndex + 1 : 0,
+        ),
+      ));
+    });
   }
 
   appBar() {
@@ -139,7 +177,7 @@ class _ControlPanelViewState extends State<ControlPanelView> {
     );
   }
 
-  playerUI() {
+  /*playerUI() {
     return Column(mainAxisAlignment: MainAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
       AlbumUI(widget.songInfo),
       Material(
@@ -147,23 +185,22 @@ class _ControlPanelViewState extends State<ControlPanelView> {
         color: Colors.transparent,
       )
     ]);
-  }
+  }*/
 
-  _buildPlayer() => new Container(
+  songTextSection() => Container(
       padding: context.paddingAllMedium,
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Column(
           children: <Widget>[
             Text(
-              widget.songInfo.title,
+              widget.songInfo[widget.selectedIndex].title,
               style: Theme.of(context).textTheme.headline6,
               textAlign: TextAlign.center,
             ),
             Text(
-              widget.songInfo.artist,
+              widget.songInfo[widget.selectedIndex].artist,
               style: Theme.of(context).textTheme.caption,
             ),
-            Padding(padding: context.paddingOnlyBottom(SizeConstants.HIGH_VALUE))
           ],
         ),
       ]));
