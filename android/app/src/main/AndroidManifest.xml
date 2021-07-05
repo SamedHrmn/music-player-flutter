@@ -2,7 +2,7 @@
     package="com.example.music_player">
    <application
         android:usesCleartextTraffic="true"
-        android:label="music_player"
+        android:label="Music Player For Android"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
