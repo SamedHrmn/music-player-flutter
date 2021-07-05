@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:music_player/core/cache/app_shared_pref.dart';
 import 'package:provider/provider.dart';
 
+import 'core/cache/app_shared_pref.dart';
 import 'core/init/notifier/theme_notifier.dart';
 import 'viewmodel/song_view_model.dart';
 import 'views/home_screen.dart';

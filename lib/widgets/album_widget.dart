@@ -1,35 +1,28 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
+import 'package:provider/provider.dart';
 
+import '../core/constants/asset_constants.dart';
 import '../core/constants/size_constants.dart';
 import '../core/extension/size_extension.dart';
+import '../viewmodel/song_view_model.dart';
 
-class AlbumUI extends StatefulWidget {
+class SongArtworkWidget extends StatelessWidget {
   final SongInfo songInfo;
+  const SongArtworkWidget({Key key, @required this.songInfo}) : super(key: key);
 
-  AlbumUI(this.songInfo);
-  @override
-  AlbumUIState createState() {
-    return new AlbumUIState();
-  }
-}
-
-class AlbumUIState extends State<AlbumUI> {
   @override
   Widget build(BuildContext context) {
-    var f = widget.songInfo.albumArtwork == null ? null : new File.fromUri(Uri.parse(widget.songInfo.albumArtwork));
-
     return Padding(
       padding: context.paddingAllHigh,
       child: Hero(
-        tag: widget.songInfo.title,
-        child: f != null
+        tag: songInfo.title,
+        child: context.read<SongViewModel>().getAlbumArtwork(songInfo) != null
             ? ClipRRect(
                 borderRadius: BorderRadius.circular(SizeConstants.MEDIUM_VALUE),
                 child: new Image.file(
-                  f,
+                  context.read<SongViewModel>().getAlbumArtwork(songInfo),
                   fit: BoxFit.fitWidth,
                   gaplessPlayback: true,
                 ),
@@ -37,7 +30,7 @@ class AlbumUIState extends State<AlbumUI> {
             : ClipRRect(
                 borderRadius: BorderRadius.circular((SizeConstants.HIGH_VALUE)),
                 child: Image.asset(
-                  "assets/artwork_placeholder.jpg",
+                  AssetConstants.ARTWORK_PLACEHOLDER,
                 ),
               ),
       ),

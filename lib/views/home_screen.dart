@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:music_player/core/cache/app_shared_pref.dart';
-import 'package:music_player/core/init/notifier/theme_notifier.dart';
 import 'package:provider/provider.dart';
 
 import '../core/extension/size_extension.dart';
@@ -22,10 +20,6 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-
-    //AppSharedPreferences.setString("theme", context.read<ThemeNotifier>().isThemeLight() ? "light" : "dark");
-
-    //SharedPreferences.getInstance().then((value) => value.setString("theme", context.watch<ThemeNotifier>().isThemeLight() ? "light" : "dark"));
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<SongViewModel>().fetchSongs();
@@ -56,14 +50,15 @@ class HomeScreenState extends State<HomeScreen> {
     return FloatingActionButton(
       child: Icon(Icons.shuffle),
       onPressed: () async {
-        /* var randomlySong = await context.read<SongViewModel>().shuffleSongAndSelectRandomly();
+        int randIndex = await context.read<SongViewModel>().shuffleSongIndex();
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => ControlPanelView(
-              songInfo: randomlySong,
+              songInfo: context.read<SongViewModel>().songInfos,
+              selectedIndex: randIndex,
             ),
           ),
-        );*/
+        );
       },
     );
   }

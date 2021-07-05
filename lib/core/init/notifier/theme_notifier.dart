@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:music_player/core/cache/app_shared_pref.dart';
 
+import '../../cache/app_shared_pref.dart';
 import '../theme/app_theme_dark.dart';
 import '../theme/app_theme_light.dart';
 

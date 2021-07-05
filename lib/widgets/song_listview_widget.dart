@@ -26,7 +26,7 @@ class _SongListViewWidgetState extends State<SongListViewWidget> {
     super.initState();
     scrollController = ScrollController();
     scrollController.addListener(() {
-      double val = scrollController.offset / 95;
+      double val = scrollController.offset / (context.getHeight * 0.18);
       setState(() {
         topItem = val;
       });
@@ -44,7 +44,7 @@ class _SongListViewWidgetState extends State<SongListViewWidget> {
   Widget build(BuildContext context) {
     return Scrollbar(
       child: ListView.builder(
-        physics: BouncingScrollPhysics(),
+        physics: CustomScrollPhysics(),
         controller: scrollController,
         itemCount: widget.songInfos.length,
         itemBuilder: (context, index) {
@@ -107,7 +107,6 @@ class _SongListViewWidgetState extends State<SongListViewWidget> {
                 child: Hero(
                   child: CustomCircleAvatarWidget(
                     color: _colors[index % _colors.length],
-                    title: songInfos[index].title,
                   ),
                   tag: songInfos[index].title,
                 ),
@@ -136,6 +135,7 @@ class _SongListViewWidgetState extends State<SongListViewWidget> {
                         child: Text(
                           songInfos[index].artist,
                           style: Theme.of(context).textTheme.caption.copyWith(fontStyle: FontStyle.italic),
+                          maxLines: 1,
                         ),
                       ),
                     ),
@@ -146,6 +146,31 @@ class _SongListViewWidgetState extends State<SongListViewWidget> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class CustomScrollPhysics extends ScrollPhysics {
+  const CustomScrollPhysics({ScrollPhysics parent}) : super(parent: parent);
+
+  @override
+  ScrollPhysics applyTo(ScrollPhysics ancestor) {
+    return CustomScrollPhysics(parent: buildParent(ancestor));
+  }
+
+  @override
+  Simulation createBallisticSimulation(ScrollMetrics position, double velocity) {
+    final tolerance = this.tolerance;
+    if ((velocity.abs() < tolerance.velocity) ||
+        (velocity > 0.0 && position.pixels >= position.maxScrollExtent) ||
+        (velocity < 0.0 && position.pixels <= position.minScrollExtent)) {
+      return null;
+    }
+    return ClampingScrollSimulation(
+      position: position.pixels,
+      velocity: velocity,
+      friction: 0.030,
+      tolerance: tolerance,
     );
   }
 }

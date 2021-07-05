@@ -3,7 +3,6 @@ import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:just_audio/just_audio.dart';
 
 class AudioProcessNotifier {
-  //final String audioFilePath;
   final List<SongInfo> songList;
   AudioPlayer _audioPlayer;
   final int selectedIndex;
@@ -49,7 +48,6 @@ class AudioProcessNotifier {
       }
     });
 
-    // listen for changes in play position
     _audioPlayer.positionStream.listen((position) {
       final oldState = progressNotifier.value;
       progressNotifier.value = ProgressBarState(
@@ -59,7 +57,6 @@ class AudioProcessNotifier {
       );
     });
 
-    // listen for changes in the buffered position
     _audioPlayer.bufferedPositionStream.listen((bufferedPosition) {
       final oldState = progressNotifier.value;
       progressNotifier.value = ProgressBarState(
@@ -69,7 +66,6 @@ class AudioProcessNotifier {
       );
     });
 
-    // listen for changes in the total audio duration
     _audioPlayer.durationStream.listen((totalDuration) {
       final oldState = progressNotifier.value;
       progressNotifier.value = ProgressBarState(
@@ -94,10 +90,6 @@ class AudioProcessNotifier {
 
   void dispose() {
     _audioPlayer.dispose();
-  }
-
-  void toNextSong() {
-    _audioPlayer.seekToNext();
   }
 }
 

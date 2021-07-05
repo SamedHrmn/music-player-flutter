@@ -4,12 +4,13 @@ import '../core/components/circular_button_atom.dart';
 
 class PlayButtonWidget extends StatelessWidget {
   final Function onTap;
-
-  const PlayButtonWidget({Key key, @required this.onTap}) : super(key: key);
+  final double size;
+  const PlayButtonWidget({Key key, @required this.onTap, @required this.size}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return CircularButtonAtom(
+      size: size,
       icon: Icon(Icons.play_arrow),
       onTap: onTap,
     );

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -23,12 +24,15 @@ class SongViewModel extends ChangeNotifier {
     state = SongFetchState.LOADED;
   }
 
-  Future shuffleSongAndSelectRandomly() async {
+  Future<int> shuffleSongIndex() async {
     state = SongFetchState.LOADING;
-    if (songInfos != null) {
-      var rand = Random().nextInt(songInfos.length - 1);
-      state = SongFetchState.LOADED;
-      return songInfos[rand];
-    }
+
+    var rand = Random().nextInt(songInfos.length - 1);
+    state = SongFetchState.LOADED;
+    return rand;
+  }
+
+  getAlbumArtwork(SongInfo songInfo){
+    return songInfo.albumArtwork == null ? null :  File.fromUri(Uri.parse(songInfo.albumArtwork));
   }
 }

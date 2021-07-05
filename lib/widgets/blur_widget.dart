@@ -1,6 +1,9 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
+import 'package:provider/provider.dart';
+
+import '../core/constants/asset_constants.dart';
+import '../viewmodel/song_view_model.dart';
 
 class BlurBackgroundWidget extends StatelessWidget {
   const BlurBackgroundWidget({Key key, this.songInfo}) : super(key: key);
@@ -22,13 +25,11 @@ class BlurBackgroundWidget extends StatelessWidget {
           color: Colors.transparent,
           image: DecorationImage(
             fit: BoxFit.cover,
-            image: albumArtWork != null
+            image: context.read<SongViewModel>().getAlbumArtwork(songInfo) != null
                 ? FileImage(
-                    albumArtWork,
+                    context.read<SongViewModel>().getAlbumArtwork(songInfo),
                   )
-                : AssetImage(
-                    'assets/background.jpg',
-                  ),
+                : AssetImage(AssetConstants.BACKGROUND),
           ),
         ),
       ),
@@ -41,6 +42,4 @@ class BlurBackgroundWidget extends StatelessWidget {
       )
     ]);
   }
-
-  get albumArtWork => songInfo.albumArtwork == null ? null : File.fromUri(Uri.parse(songInfo.albumArtwork));
 }
