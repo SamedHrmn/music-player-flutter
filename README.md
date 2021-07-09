@@ -50,4 +50,25 @@
 
 <img src="https://user-images.githubusercontent.com/60006881/125139402-2704f380-e119-11eb-9802-670d23e2e5d2.png" width="300px"></img> &nbsp;&nbsp; <img src="https://user-images.githubusercontent.com/60006881/125139487-47cd4900-e119-11eb-907a-5118d5ec1a18.png" width="300px"> &nbsp;&nbsp;  <img src="https://user-images.githubusercontent.com/60006881/125139817-e6f24080-e119-11eb-944c-338c9f558f87.png" width="300px"><br><br>
 
+<h3> Licence </h3>
+MIT License
 
+Copyright (c) 2021 SamedHrmn
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
