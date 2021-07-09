@@ -1,5 +1,5 @@
 # music-player-flutter
-#### Flutter music player application which is my personal project published to play store. Project structures as following,
+#### Flutter music player application which is my personal project published to play store. Project structures are as following,
 <pre>
      lib--                                        App Features:
          |                                           - Dynamic theme and save with Shared Preferences
