@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
+import 'package:volume_controller/volume_controller.dart';
 
 import '../core/constants/size_constants.dart';
 import '../core/extension/size_extension.dart';
@@ -26,17 +27,23 @@ class ControlPanelView extends StatefulWidget {
 
 class _ControlPanelViewState extends State<ControlPanelView> {
   AudioProcessNotifier _audioProcessNotifier;
+  double _setVolumeValue = 0;
 
   @override
   void initState() {
     super.initState();
-
+    VolumeController().getVolume().then((volume) {
+      setState(() {
+        _setVolumeValue = volume;
+      });
+    });
     _audioProcessNotifier = AudioProcessNotifier(songList: widget.songInfo, selectedIndex: widget.selectedIndex);
   }
 
   @override
   void dispose() {
     _audioProcessNotifier.dispose();
+    VolumeController().removeListener();
     super.dispose();
   }
 
@@ -78,6 +85,10 @@ class _ControlPanelViewState extends State<ControlPanelView> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Padding(
+                        padding: context.paddingOnlyBottom(SizeConstants.LOW_VALUE),
+                        child: volumeControl(),
+                      ),
+                      Padding(
                         padding: context.paddingOnlyBottom(SizeConstants.MEDIUM_VALUE),
                         child: _buildProgessBar(),
                       ),
@@ -98,6 +109,41 @@ class _ControlPanelViewState extends State<ControlPanelView> {
         ),
       ),
     ));
+  }
+
+  volumeControl() {
+    return Row(
+      children: [
+        Flexible(
+          child: Slider(
+            activeColor: Theme.of(context).accentColor,
+            inactiveColor: Colors.white30,
+            min: 0,
+            max: 1,
+            onChanged: (double value) {
+              _setVolumeValue = value;
+              VolumeController().setVolume(_setVolumeValue);
+              setState(() {});
+            },
+            value: _setVolumeValue,
+          ),
+        ),
+        IconButton(
+          onPressed: () {
+            VolumeController().getVolume().then((volume) {
+              if (volume > 0)
+                VolumeController().muteVolume();
+              else
+                VolumeController().setVolume(0.33);
+            });
+          },
+          icon: Icon(
+            Icons.volume_off,
+            color: Theme.of(context).accentColor,
+          ),
+        ),
+      ],
+    );
   }
 
   appBar() {
