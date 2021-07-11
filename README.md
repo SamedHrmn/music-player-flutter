@@ -4,7 +4,7 @@
      lib--                                        App Features:
          |                                           - Dynamic theme and save with Shared Preferences
          |__core                                     - Shuffle and Play Random Song
-                |__cache
+                |__cache                             - Volume up and down (Thanks for cihatislamdede)  
                      |__app_shared_pref.dart
                 |__components
                      |__circulat_button_atom.dart
@@ -48,7 +48,7 @@
  * provider
  * audio_video_progress_bar <br><br>
 
-<img src="https://user-images.githubusercontent.com/60006881/125139402-2704f380-e119-11eb-9802-670d23e2e5d2.png" width="300px"></img> &nbsp;&nbsp; <img src="https://user-images.githubusercontent.com/60006881/125139487-47cd4900-e119-11eb-907a-5118d5ec1a18.png" width="300px"> &nbsp;&nbsp;  <img src="https://user-images.githubusercontent.com/60006881/125139817-e6f24080-e119-11eb-944c-338c9f558f87.png" width="300px"><br><br>
+<img src="https://user-images.githubusercontent.com/60006881/125201500-220a8600-e278-11eb-86fa-eeda6447af99.png" width="300px"></img> &nbsp;&nbsp; <img src="https://user-images.githubusercontent.com/60006881/125139487-47cd4900-e119-11eb-907a-5118d5ec1a18.png" width="300px"> &nbsp;&nbsp;  <img src="https://user-images.githubusercontent.com/60006881/125139817-e6f24080-e119-11eb-944c-338c9f558f87.png" width="300px"><br><br>
 
 <h3> Licence </h3>
 MIT License
