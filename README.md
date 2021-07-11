@@ -4,7 +4,7 @@
      lib--                                        App Features:
          |                                           - Dynamic theme and save with Shared Preferences
          |__core                                     - Shuffle and Play Random Song
-                |__cache                             - Volume up and down (Thanks for cihatislamdede)  
+                |__cache                             - Volume controller (Thanks for cihatislamdede)  
                      |__app_shared_pref.dart
                 |__components
                      |__circulat_button_atom.dart
