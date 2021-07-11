@@ -3,7 +3,7 @@
 <pre>
      lib--                                        App Features:
          |                                           - Dynamic theme and save with Shared Preferences
-         |__core                                     - Shuffle and Play Random Song
+         |__core                                     - Shuffle and play random song
                 |__cache                             - Volume controller (Thanks for cihatislamdede)  
                      |__app_shared_pref.dart
                 |__components
