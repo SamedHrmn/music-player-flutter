@@ -46,6 +46,7 @@
  * just_audio
  * shared_preferences
  * provider
+ * volume_controller
  * audio_video_progress_bar <br><br>
 
 <img src="https://user-images.githubusercontent.com/60006881/125201500-220a8600-e278-11eb-86fa-eeda6447af99.png" width="300px"></img> &nbsp;&nbsp; <img src="https://user-images.githubusercontent.com/60006881/125139487-47cd4900-e119-11eb-907a-5118d5ec1a18.png" width="300px"> &nbsp;&nbsp;  <img src="https://user-images.githubusercontent.com/60006881/125139817-e6f24080-e119-11eb-944c-338c9f558f87.png" width="300px"><br><br>
