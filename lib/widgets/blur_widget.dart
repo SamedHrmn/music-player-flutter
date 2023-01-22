@@ -6,7 +6,7 @@ import '../core/constants/asset_constants.dart';
 import '../viewmodel/song_view_model.dart';
 
 class BlurBackgroundWidget extends StatelessWidget {
-  const BlurBackgroundWidget({Key key, this.songInfo}) : super(key: key);
+  const BlurBackgroundWidget({Key? key, required this.songInfo}) : super(key: key);
 
   final SongInfo songInfo;
 
@@ -26,10 +26,10 @@ class BlurBackgroundWidget extends StatelessWidget {
           image: DecorationImage(
             fit: BoxFit.cover,
             image: context.read<SongViewModel>().getAlbumArtwork(songInfo) != null
-                ? FileImage(
-                    context.read<SongViewModel>().getAlbumArtwork(songInfo),
-                  )
-                : AssetImage(AssetConstants.BACKGROUND),
+                ? Image.file(
+                    context.read<SongViewModel>().getAlbumArtwork(songInfo)!,
+                  ).image
+                : const AssetImage(AssetConstants.BACKGROUND),
           ),
         ),
       ),

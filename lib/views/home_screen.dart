@@ -9,7 +9,7 @@ import 'control_panel_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -35,23 +35,30 @@ class HomeScreenState extends State<HomeScreen> {
       floatingActionButton: shuffleAndSelectRandomlyFloatingButton,
       body: SafeArea(child: Consumer<SongViewModel>(
         builder: (context, viewmodel, child) {
-          if (viewmodel.state == SongFetchState.LOADED) {
-            return SongListViewWidget(songInfos: viewmodel.songInfos);
+          if (viewmodel.state == SongFetchState.LOADING) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (viewmodel.state == SongFetchState.LOADED && viewmodel.songInfos.isEmpty) {
+            return const Center(
+              child: Text("No song data"),
+            );
           }
-          return Center(
-            child: CircularProgressIndicator(),
-          );
+
+          return const SongListViewWidget();
         },
       )),
     );
   }
 
-  get shuffleAndSelectRandomlyFloatingButton {
+  Widget get shuffleAndSelectRandomlyFloatingButton {
     return FloatingActionButton(
-      child: Icon(Icons.shuffle),
+      child: const Icon(Icons.shuffle),
       onPressed: () async {
-        int randIndex = await context.read<SongViewModel>().shuffleSongIndex();
-        Navigator.of(context).push(
+        final safeContext = Navigator.of(context);
+        final randIndex = await context.read<SongViewModel>().shuffleSongIndex();
+        if (randIndex == null) return;
+        safeContext.push(
           MaterialPageRoute(
             builder: (context) => ControlPanelView(
               songInfo: context.read<SongViewModel>().songInfos,

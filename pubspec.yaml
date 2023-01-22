@@ -18,24 +18,31 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.1+2
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  audio_video_progress_bar: ^0.4.0
+  
   cupertino_icons: ^1.0.2
-  flutter_audio_query: ^0.3.5+6
-  flutter_launcher_icons: ^0.9.0
-  just_audio: ^0.7.4+1
-  lottie: ^1.0.1
-  provider: ^5.0.0
-  shared_preferences: ^2.0.6
-  volume_controller: ^2.0.2
+
+  audio_video_progress_bar: ^0.11.0
+  flutter_audio_query:
+    git:
+      url: https://github.com/sc4v3ng3r/flutter_audio_query.git
+      ref: f0fe6b9
+  flutter_launcher_icons: ^0.11.0
+  just_audio: ^0.9.31
+  lottie: ^2.2.0
+  provider: ^6.0.5
+  shared_preferences: ^2.0.17
+  volume_controller: ^2.0.6
 dev_dependencies:
+  flutter_lints: ^2.0.1
   flutter_test:
     sdk: flutter
 
+flutter_lints: ^2.0.1
 flutter_icons:
   android: true
   ios: true

@@ -2,7 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AppSharedPreferences {
   static final AppSharedPreferences _instance = AppSharedPreferences._internal();
-  SharedPreferences _prefsInstance;
+  SharedPreferences? _prefsInstance;
   static AppSharedPreferences get instance => _instance;
 
   factory AppSharedPreferences() {
@@ -17,18 +17,15 @@ class AppSharedPreferences {
     }
   }
 
-  static initPref() async {
-    if (instance._prefsInstance == null) {
-      instance._prefsInstance = await SharedPreferences.getInstance();
-    }
-    return;
+  static Future<void> initPref() async {
+    instance._prefsInstance ??= await SharedPreferences.getInstance();
   }
 
-  getString(String key, [String defValue]) {
-    return _prefsInstance.getString(key) ?? defValue ?? "";
+  String getString(String key, [String? defValue]) {
+    return _prefsInstance?.getString(key) ?? defValue ?? "";
   }
 
-  setString(String key, String value) async {
-    await _prefsInstance.setString(key, value);
+  Future<void> setString(String key, String value) async {
+    await _prefsInstance?.setString(key, value);
   }
 }

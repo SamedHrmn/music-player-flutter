@@ -4,7 +4,7 @@ import 'package:just_audio/just_audio.dart';
 
 class AudioProcessNotifier {
   final List<SongInfo> songList;
-  AudioPlayer _audioPlayer;
+  AudioPlayer? _audioPlayer;
   final int selectedIndex;
 
   final progressNotifier = ValueNotifier<ProgressBarState>(
@@ -16,7 +16,7 @@ class AudioProcessNotifier {
   );
   final buttonNotifier = ValueNotifier<ButtonState>(ButtonState.playing);
 
-  AudioProcessNotifier({@required this.selectedIndex, @required this.songList}) {
+  AudioProcessNotifier({required this.selectedIndex, required this.songList}) {
     _initPlayer();
   }
 
@@ -30,10 +30,10 @@ class AudioProcessNotifier {
 
   _initPlayer() async {
     _audioPlayer = AudioPlayer();
-    _audioPlayer.setAudioSource(ConcatenatingAudioSource(children: getAllAudioSource()), initialIndex: selectedIndex);
-    _audioPlayer.play();
+    _audioPlayer?.setAudioSource(ConcatenatingAudioSource(children: getAllAudioSource()), initialIndex: selectedIndex);
+    _audioPlayer?.play();
 
-    _audioPlayer.playerStateStream.listen((playerState) {
+    _audioPlayer?.playerStateStream.listen((playerState) {
       final isPlaying = playerState.playing;
       final processingState = playerState.processingState;
       if (processingState == ProcessingState.loading || processingState == ProcessingState.buffering) {
@@ -43,12 +43,12 @@ class AudioProcessNotifier {
       } else if (processingState != ProcessingState.completed) {
         buttonNotifier.value = ButtonState.playing;
       } else {
-        _audioPlayer.seek(Duration.zero);
-        _audioPlayer.pause();
+        _audioPlayer?.seek(Duration.zero);
+        _audioPlayer?.pause();
       }
     });
 
-    _audioPlayer.positionStream.listen((position) {
+    _audioPlayer?.positionStream.listen((position) {
       final oldState = progressNotifier.value;
       progressNotifier.value = ProgressBarState(
         current: position,
@@ -57,7 +57,7 @@ class AudioProcessNotifier {
       );
     });
 
-    _audioPlayer.bufferedPositionStream.listen((bufferedPosition) {
+    _audioPlayer?.bufferedPositionStream.listen((bufferedPosition) {
       final oldState = progressNotifier.value;
       progressNotifier.value = ProgressBarState(
         current: oldState.current,
@@ -66,7 +66,7 @@ class AudioProcessNotifier {
       );
     });
 
-    _audioPlayer.durationStream.listen((totalDuration) {
+    _audioPlayer?.durationStream.listen((totalDuration) {
       final oldState = progressNotifier.value;
       progressNotifier.value = ProgressBarState(
         current: oldState.current,
@@ -77,27 +77,27 @@ class AudioProcessNotifier {
   }
 
   void play() async {
-    _audioPlayer.play();
+    _audioPlayer?.play();
   }
 
   void pause() {
-    _audioPlayer.pause();
+    _audioPlayer?.pause();
   }
 
   void seek(Duration position) {
-    _audioPlayer.seek(position);
+    _audioPlayer?.seek(position);
   }
 
   void dispose() {
-    _audioPlayer.dispose();
+    _audioPlayer?.dispose();
   }
 }
 
 class ProgressBarState {
   ProgressBarState({
-    @required this.current,
-    @required this.buffered,
-    @required this.total,
+    required this.current,
+    required this.buffered,
+    required this.total,
   });
   final Duration current;
   final Duration buffered;
