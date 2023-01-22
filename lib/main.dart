@@ -15,13 +15,15 @@ void main() async {
       ChangeNotifierProvider(
         create: (context) => ThemeNotifier(),
       ),
-      ChangeNotifierProvider(create: (context) => SongViewModel())
-    ], child: MyApp()),
+      ChangeNotifierProvider(
+        create: (context) => SongViewModel(),
+      )
+    ], child: const MyApp()),
   );
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   _MyAppState createState() => _MyAppState();
@@ -38,7 +40,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: Provider.of<ThemeNotifier>(context, listen: true).currentTheme,
-      home: HomeScreen(),
+      home: const HomeScreen(),
     );
   }
 }

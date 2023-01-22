@@ -17,14 +17,14 @@ class ControlPanelView extends StatefulWidget {
   final int selectedIndex;
   final List<SongInfo> songInfo;
 
-  const ControlPanelView({Key key, @required this.songInfo, @required this.selectedIndex}) : super(key: key);
+  const ControlPanelView({Key? key, required this.songInfo, required this.selectedIndex}) : super(key: key);
 
   @override
   _ControlPanelViewState createState() => _ControlPanelViewState();
 }
 
 class _ControlPanelViewState extends State<ControlPanelView> {
-  AudioProcessNotifier _audioProcessNotifier;
+  late final AudioProcessNotifier _audioProcessNotifier;
 
   @override
   void initState() {
@@ -72,7 +72,7 @@ class _ControlPanelViewState extends State<ControlPanelView> {
                   children: [
                     Padding(
                       padding: context.paddingOnlyBottom(SizeConstants.LOW_VALUE),
-                      child: VolumeControlWidget(),
+                      child: const VolumeControlWidget(),
                     ),
                     Padding(
                       padding: context.paddingOnlyBottom(SizeConstants.MEDIUM_VALUE),
@@ -129,9 +129,9 @@ class _ControlPanelViewState extends State<ControlPanelView> {
     return ValueListenableBuilder<ProgressBarState>(
       valueListenable: _audioProcessNotifier.progressNotifier,
       builder: (_, value, __) => ProgressBar(
-        thumbColor: Theme.of(context).accentColor,
+        thumbColor: Theme.of(context).colorScheme.secondary,
         baseBarColor: Theme.of(context).primaryColorLight,
-        progressBarColor: Theme.of(context).accentColor,
+        progressBarColor: Theme.of(context).colorScheme.secondary,
         progress: value.current,
         buffered: value.buffered,
         total: value.total,
@@ -160,10 +160,10 @@ class _ControlPanelViewState extends State<ControlPanelView> {
         switch (value) {
           case ButtonState.paused:
             return PlayButtonWidget(size: context.getHeight, onTap: _audioProcessNotifier.play);
-            break;
+
           case ButtonState.playing:
             return PauseButtonWidget(size: context.getHeight, onTap: _audioProcessNotifier.pause);
-            break;
+
           default:
         }
 

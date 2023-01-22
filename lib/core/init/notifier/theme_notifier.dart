@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter/material.dart';
 
 import '../../cache/app_shared_pref.dart';
@@ -31,7 +33,7 @@ class ThemeNotifier extends ChangeNotifier {
   }
 
   getPrefTheme() {
-    if (AppSharedPreferences.instance.getString("theme") == null || AppSharedPreferences.instance.getString("theme") == "light") {
+    if (AppSharedPreferences.instance.getString("theme").isEmpty || AppSharedPreferences.instance.getString("theme") == "light") {
       changeTheme(AppTheme.LIGHT);
     } else {
       changeTheme(AppTheme.DARK);

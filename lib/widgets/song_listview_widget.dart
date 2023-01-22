@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
+import 'package:music_player/viewmodel/song_view_model.dart';
+import 'package:provider/provider.dart';
 
 import '../core/constants/size_constants.dart';
 import '../core/extension/size_extension.dart';
@@ -7,9 +9,7 @@ import '../views/control_panel_screen.dart';
 import 'custom_avatar_widget.dart';
 
 class SongListViewWidget extends StatefulWidget {
-  const SongListViewWidget({Key key, this.songInfos}) : super(key: key);
-
-  final List<SongInfo> songInfos;
+  const SongListViewWidget({Key? key}) : super(key: key);
 
   @override
   _SongListViewWidgetState createState() => _SongListViewWidgetState();
@@ -17,9 +17,9 @@ class SongListViewWidget extends StatefulWidget {
 
 class _SongListViewWidgetState extends State<SongListViewWidget> {
   final List<MaterialColor> _colors = Colors.primaries;
-  ScrollController scrollController;
+  late final ScrollController scrollController;
   double topItem = 0;
-  final Duration opacityDuration = Duration(milliseconds: 200);
+  final opacityDuration = const Duration(milliseconds: 200);
 
   @override
   void initState() {
@@ -43,40 +43,41 @@ class _SongListViewWidgetState extends State<SongListViewWidget> {
   @override
   Widget build(BuildContext context) {
     return Scrollbar(
-      child: ListView.builder(
-        physics: CustomScrollPhysics(),
-        controller: scrollController,
-        itemCount: widget.songInfos.length,
-        itemBuilder: (context, index) {
-          double scale = 1.0;
-          if (topItem > 0.5) {
-            scale = index + 0.5 - topItem;
-            if (scale < 0) {
-              scale = 0;
-            } else if (scale > 1) {
-              scale = 1;
+      child: Consumer<SongViewModel>(builder: (context, viewmodel, _) {
+        return ListView.builder(
+          controller: scrollController,
+          itemCount: viewmodel.songInfos.length,
+          itemBuilder: (context, index) {
+            double scale = 1.0;
+            if (topItem > 0.5) {
+              scale = index + 0.5 - topItem;
+              if (scale < 0) {
+                scale = 0;
+              } else if (scale > 1) {
+                scale = 1;
+              }
             }
-          }
 
-          return AnimatedOpacity(
-            opacity: scale,
-            duration: opacityDuration,
-            child: Transform(
-              transform: Matrix4.identity()..scale(scale, scale),
-              alignment: index % 2 == 0 ? Alignment.topLeft : Alignment.topRight,
-              child: Align(
-                heightFactor: 0.75,
-                alignment: Alignment.topCenter,
-                child: songItemListTile(index, widget.songInfos, context),
+            return AnimatedOpacity(
+              opacity: scale,
+              duration: opacityDuration,
+              child: Transform(
+                transform: Matrix4.identity()..scale(scale, scale),
+                alignment: index % 2 == 0 ? Alignment.topLeft : Alignment.topRight,
+                child: Align(
+                  heightFactor: 0.75,
+                  alignment: Alignment.topCenter,
+                  child: songItemListTile(index, viewmodel.songInfos, context),
+                ),
               ),
-            ),
-          );
-        },
-      ),
+            );
+          },
+        );
+      }),
     );
   }
 
-  songItemListTile(int index, List<SongInfo> songInfos, BuildContext context) {
+  Widget songItemListTile(int index, List<SongInfo> songInfos, BuildContext context) {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
@@ -94,7 +95,7 @@ class _SongListViewWidgetState extends State<SongListViewWidget> {
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(SizeConstants.MEDIUM_VALUE),
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(color: Colors.black, blurRadius: 10.0, offset: Offset(0, 2)),
           ],
         ),
@@ -105,10 +106,10 @@ class _SongListViewWidgetState extends State<SongListViewWidget> {
               child: Padding(
                 padding: context.paddingOnlyLeft(SizeConstants.LOW_VALUE),
                 child: Hero(
+                  tag: index,
                   child: CustomCircleAvatarWidget(
                     color: _colors[index % _colors.length],
                   ),
-                  tag: songInfos[index].title,
                 ),
               ),
             ),
@@ -134,7 +135,7 @@ class _SongListViewWidgetState extends State<SongListViewWidget> {
                         alignment: Alignment.centerRight,
                         child: Text(
                           songInfos[index].artist,
-                          style: Theme.of(context).textTheme.caption.copyWith(fontStyle: FontStyle.italic),
+                          style: Theme.of(context).textTheme.caption?.copyWith(fontStyle: FontStyle.italic),
                           maxLines: 1,
                         ),
                       ),
@@ -151,11 +152,11 @@ class _SongListViewWidgetState extends State<SongListViewWidget> {
 }
 
 class CustomScrollPhysics extends ScrollPhysics {
-  const CustomScrollPhysics({ScrollPhysics parent}) : super(parent: parent);
+  const CustomScrollPhysics({required ScrollPhysics parent}) : super(parent: parent);
 
   @override
-  ScrollPhysics applyTo(ScrollPhysics ancestor) {
-    return CustomScrollPhysics(parent: buildParent(ancestor));
+  ScrollPhysics applyTo(ScrollPhysics? ancestor) {
+    return CustomScrollPhysics(parent: buildParent(ancestor)!);
   }
 
   @override
@@ -164,7 +165,7 @@ class CustomScrollPhysics extends ScrollPhysics {
     if ((velocity.abs() < tolerance.velocity) ||
         (velocity > 0.0 && position.pixels >= position.maxScrollExtent) ||
         (velocity < 0.0 && position.pixels <= position.minScrollExtent)) {
-      return null;
+      return ClampingScrollSimulation(position: position.pixels, velocity: 0);
     }
     return ClampingScrollSimulation(
       position: position.pixels,

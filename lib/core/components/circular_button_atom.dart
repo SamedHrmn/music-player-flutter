@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class CircularButtonAtom extends StatelessWidget {
   final Widget icon;
-  final Function onTap;
+  final VoidCallback onTap;
   final double size;
 
-  const CircularButtonAtom({Key key, @required this.icon, @required this.onTap, @required this.size}) : super(key: key);
+  const CircularButtonAtom({Key? key, required this.icon, required this.onTap, required this.size}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

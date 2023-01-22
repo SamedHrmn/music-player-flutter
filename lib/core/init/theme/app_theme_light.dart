@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'app_theme.dart';
 
 class AppThemeLight extends IAppTheme {
-  static AppThemeLight _instance;
+  static AppThemeLight? _instance;
   static AppThemeLight get instance {
     return _instance ??= AppThemeLight._init();
   }

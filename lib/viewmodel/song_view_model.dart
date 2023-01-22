@@ -4,12 +4,12 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
 
-enum SongFetchState { LOADING, LOADED }
+enum SongFetchState { INIT, LOADING, LOADED }
 
 class SongViewModel extends ChangeNotifier {
   List<SongInfo> songInfos = [];
-  FlutterAudioQuery _audioQuery = FlutterAudioQuery();
-  SongFetchState _state;
+  final FlutterAudioQuery _audioQuery = FlutterAudioQuery();
+  SongFetchState _state = SongFetchState.INIT;
 
   set state(val) {
     _state = val;
@@ -21,10 +21,13 @@ class SongViewModel extends ChangeNotifier {
   Future fetchSongs() async {
     state = SongFetchState.LOADING;
     songInfos = await _audioQuery.getSongs();
+    songInfos += songInfos + songInfos + songInfos + songInfos;
     state = SongFetchState.LOADED;
   }
 
-  Future<int> shuffleSongIndex() async {
+  Future<int?> shuffleSongIndex() async {
+    if (songInfos.isEmpty) return null;
+
     state = SongFetchState.LOADING;
 
     var rand = Random().nextInt(songInfos.length - 1);
@@ -32,7 +35,12 @@ class SongViewModel extends ChangeNotifier {
     return rand;
   }
 
-  getAlbumArtwork(SongInfo songInfo){
-    return songInfo.albumArtwork == null ? null :  File.fromUri(Uri.parse(songInfo.albumArtwork));
+  File? getAlbumArtwork(SongInfo songInfo) {
+    try {
+      if (songInfo.albumArtwork.isEmpty) return null;
+      return File.fromUri(Uri.parse(songInfo.albumArtwork));
+    } catch (e) {
+      return null;
+    }
   }
 }
