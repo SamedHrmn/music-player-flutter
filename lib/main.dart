@@ -11,35 +11,28 @@ void main() async {
   await AppSharedPreferences.initPref();
 
   runApp(
-    MultiProvider(providers: [
-      ChangeNotifierProvider(
-        create: (context) => ThemeNotifier(),
-      ),
-      ChangeNotifierProvider(
-        create: (context) => SongViewModel(),
-      )
-    ], child: const MyApp()),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => ThemeNotifier(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => SongViewModel(),
+        )
+      ],
+      child: const MyApp(),
+    ),
   );
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: Provider.of<ThemeNotifier>(context, listen: true).currentTheme,
+      theme: context.watch<ThemeNotifier>().currentTheme,
       home: const HomeScreen(),
     );
   }

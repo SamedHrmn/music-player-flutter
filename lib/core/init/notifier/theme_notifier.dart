@@ -26,7 +26,7 @@ class ThemeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool isThemeLight() => _currentTheme == AppThemeLight.instance.theme ? true : false;
+  bool isThemeLight() => currentTheme.primaryColor == AppThemeLight.instance.theme.primaryColor ? true : false;
 
   savePrefTheme() async {
     await AppSharedPreferences.instance.setString("theme", isThemeLight() ? "light" : "dark");

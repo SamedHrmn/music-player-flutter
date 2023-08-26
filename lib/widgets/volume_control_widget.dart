@@ -39,9 +39,10 @@ class _VolumeControlWidgetState extends State<VolumeControlWidget> {
             min: 0,
             max: 1,
             onChanged: (double value) {
-              _setVolumeValue = value;
-              VolumeController().setVolume(_setVolumeValue);
-              setState(() {});
+              setState(() {
+                _setVolumeValue = value;
+                VolumeController().setVolume(_setVolumeValue, showSystemUI: false);
+              });
             },
             value: _setVolumeValue,
           ),
@@ -50,14 +51,20 @@ class _VolumeControlWidgetState extends State<VolumeControlWidget> {
           onPressed: () {
             VolumeController().getVolume().then((volume) {
               if (volume > 0) {
-                VolumeController().muteVolume();
+                VolumeController().muteVolume(showSystemUI: false);
+                setState(() {
+                  _setVolumeValue = 0;
+                });
               } else {
-                VolumeController().setVolume(0.33);
+                VolumeController().setVolume(0.33, showSystemUI: false);
+                setState(() {
+                  _setVolumeValue = 0.33;
+                });
               }
             });
           },
           icon: Icon(
-            Icons.volume_off,
+            _setVolumeValue == 0 ? Icons.volume_off_rounded : Icons.volume_up_rounded,
             color: Theme.of(context).colorScheme.secondary,
           ),
         ),

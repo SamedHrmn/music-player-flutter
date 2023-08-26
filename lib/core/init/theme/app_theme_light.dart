@@ -12,40 +12,72 @@ class AppThemeLight extends IAppTheme {
   @override
   ThemeData get theme => ThemeData(
         fontFamily: 'OpenSans',
-        colorScheme: _colorScheme(),
         brightness: Brightness.light,
-        primaryColor: Color(0xfffeca90),
-        primaryColorBrightness: Brightness.light,
-        primaryColorLight: Color(0xffffe7cc),
-        primaryColorDark: Color(0xff985101),
-        accentColor: Color(0xfffd8602),
-        accentColorBrightness: Brightness.light,
-        canvasColor: Color(0xfffafafa),
-        scaffoldBackgroundColor: Color(0xfffafafa),
-        bottomAppBarColor: Color(0xffffffff),
-        cardColor: Color(0xffffffff),
-        dividerColor: Color(0x1f000000),
-        highlightColor: Color(0x66bcbcbc),
-        splashColor: Color(0x66c8c8c8),
-        selectedRowColor: Color(0xfff5f5f5),
-        unselectedWidgetColor: Color(0x8a000000),
-        disabledColor: Color(0x61000000),
-        buttonColor: Color(0xffe0e0e0),
-        toggleableActiveColor: Color(0xffca6b02),
-        secondaryHeaderColor: Color(0xfffff3e6),
-        backgroundColor: Color(0xfffecf9a),
-        dialogBackgroundColor: Color(0xffffffff),
-        indicatorColor: Color(0xfffd8602),
-        hintColor: Color(0x8a000000),
-        errorColor: Color(0xffd32f2f),
+        primaryColor: const Color(0xfffeca90),
+        primaryColorLight: const Color(0xffffe7cc),
+        primaryColorDark: const Color(0xff985101),
+        hintColor: const Color(0xfffd8602),
+        canvasColor: const Color(0xfffafafa),
+        scaffoldBackgroundColor: const Color(0xfffafafa),
+        cardColor: const Color(0xffffffff),
+        dividerColor: const Color(0x1f000000),
+        highlightColor: const Color(0x66bcbcbc),
+        splashColor: const Color(0x66c8c8c8),
+        unselectedWidgetColor: const Color(0x8a000000),
+        disabledColor: const Color(0x61000000),
+        secondaryHeaderColor: const Color(0xfffff3e6),
+        dialogBackgroundColor: const Color(0xffffffff),
+        indicatorColor: const Color(0xfffd8602),
+        checkboxTheme: CheckboxThemeData(
+          fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+            if (states.contains(MaterialState.disabled)) {
+              return null;
+            }
+            if (states.contains(MaterialState.selected)) {
+              return const Color(0xffca6b02);
+            }
+            return null;
+          }),
+        ),
+        radioTheme: RadioThemeData(
+          fillColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+            if (states.contains(MaterialState.disabled)) {
+              return null;
+            }
+            if (states.contains(MaterialState.selected)) {
+              return const Color(0xffca6b02);
+            }
+            return null;
+          }),
+        ),
+        switchTheme: SwitchThemeData(
+          thumbColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+            if (states.contains(MaterialState.disabled)) {
+              return null;
+            }
+            if (states.contains(MaterialState.selected)) {
+              return const Color(0xffca6b02);
+            }
+            return null;
+          }),
+          trackColor: MaterialStateProperty.resolveWith<Color?>((Set<MaterialState> states) {
+            if (states.contains(MaterialState.disabled)) {
+              return null;
+            }
+            if (states.contains(MaterialState.selected)) {
+              return const Color(0xffca6b02);
+            }
+            return null;
+          }),
+        ),
+        bottomAppBarTheme: const BottomAppBarTheme(color: Color(0xffffffff)),
+        colorScheme: _colorScheme().copyWith(background: const Color(0xfffecf9a)).copyWith(error: const Color(0xffd32f2f)),
       );
 
   _colorScheme() {
-    return ColorScheme(
+    return const ColorScheme(
       primary: Color(0xfffeca90),
-      primaryVariant: Color(0xff985101),
       secondary: Color(0xfffd8602),
-      secondaryVariant: Color(0xff985101),
       surface: Color(0xffffffff),
       background: Color(0xfffecf9a),
       error: Color(0xffd32f2f),
@@ -60,24 +92,24 @@ class AppThemeLight extends IAppTheme {
 
   @override
   TextTheme get textTheme => ThemeData.light().textTheme.copyWith(
-        headline1: TextStyle(fontSize: 96, fontWeight: FontWeight.w300, letterSpacing: -1.5),
-        headline2: TextStyle(fontSize: 60, fontWeight: FontWeight.w300, letterSpacing: -0.5),
-        headline3: TextStyle(
+        displayLarge: const TextStyle(fontSize: 96, fontWeight: FontWeight.w300, letterSpacing: -1.5),
+        displayMedium: const TextStyle(fontSize: 60, fontWeight: FontWeight.w300, letterSpacing: -0.5),
+        displaySmall: const TextStyle(
           fontSize: 48,
           fontWeight: FontWeight.w400,
         ),
-        headline4: TextStyle(fontSize: 34, fontWeight: FontWeight.w400, letterSpacing: 0.25),
-        headline5: TextStyle(
+        headlineMedium: const TextStyle(fontSize: 34, fontWeight: FontWeight.w400, letterSpacing: 0.25),
+        headlineSmall: const TextStyle(
           fontSize: 24,
           fontWeight: FontWeight.w400,
         ),
-        headline6: TextStyle(fontSize: 20, fontWeight: FontWeight.w500, letterSpacing: 0.15),
-        subtitle1: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, letterSpacing: 0.15),
-        subtitle2: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, letterSpacing: 0.1),
-        bodyText1: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, letterSpacing: 0.5),
-        bodyText2: TextStyle(fontSize: 14, fontWeight: FontWeight.w400, letterSpacing: 0.25),
-        button: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, letterSpacing: 1.25),
-        caption: TextStyle(fontSize: 12, fontWeight: FontWeight.w400, letterSpacing: 0.4),
-        overline: TextStyle(fontSize: 10, fontWeight: FontWeight.w400, letterSpacing: 1.5),
+        titleLarge: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, letterSpacing: 0.15),
+        titleMedium: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400, letterSpacing: 0.15),
+        titleSmall: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, letterSpacing: 0.1),
+        bodyLarge: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400, letterSpacing: 0.5),
+        bodyMedium: const TextStyle(fontSize: 14, fontWeight: FontWeight.w400, letterSpacing: 0.25),
+        labelLarge: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, letterSpacing: 1.25),
+        bodySmall: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400, letterSpacing: 0.4),
+        labelSmall: const TextStyle(fontSize: 10, fontWeight: FontWeight.w400, letterSpacing: 1.5),
       );
 }

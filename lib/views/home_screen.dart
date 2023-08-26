@@ -21,8 +21,8 @@ class HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<SongViewModel>().fetchSongs();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await context.read<SongViewModel>().fetchSongs();
     });
   }
 
@@ -43,6 +43,10 @@ class HomeScreenState extends State<HomeScreen> {
             return const Center(
               child: Text("No song data"),
             );
+          } else if (viewmodel.state == SongFetchState.PERMISSION_DENIED) {
+            return const Center(
+              child: Text("Please allow media permission."),
+            );
           }
 
           return const SongListViewWidget();
@@ -54,9 +58,9 @@ class HomeScreenState extends State<HomeScreen> {
   Widget get shuffleAndSelectRandomlyFloatingButton {
     return FloatingActionButton(
       child: const Icon(Icons.shuffle),
-      onPressed: () async {
+      onPressed: () {
         final safeContext = Navigator.of(context);
-        final randIndex = await context.read<SongViewModel>().shuffleSongIndex();
+        final randIndex = context.read<SongViewModel>().shuffleSongIndex();
         if (randIndex == null) return;
         safeContext.push(
           MaterialPageRoute(

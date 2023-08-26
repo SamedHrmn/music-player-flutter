@@ -2,13 +2,18 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_audio_query/flutter_audio_query.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 
-enum SongFetchState { INIT, LOADING, LOADED }
+enum SongFetchState {
+  INIT,
+  LOADING,
+  LOADED,
+  PERMISSION_DENIED,
+}
 
 class SongViewModel extends ChangeNotifier {
-  List<SongInfo> songInfos = [];
-  final FlutterAudioQuery _audioQuery = FlutterAudioQuery();
+  List<AudioModel> songInfos = [];
+  final OnAudioQuery _audioQuery = OnAudioQuery();
   SongFetchState _state = SongFetchState.INIT;
 
   set state(val) {
@@ -18,14 +23,25 @@ class SongViewModel extends ChangeNotifier {
 
   get state => _state;
 
-  Future fetchSongs() async {
-    state = SongFetchState.LOADING;
-    songInfos = await _audioQuery.getSongs();
-    songInfos += songInfos + songInfos + songInfos + songInfos;
-    state = SongFetchState.LOADED;
+  Future<bool> _requestAudioPermissionIfNeeded() async {
+    final ifNeeded = await _audioQuery.permissionsStatus();
+    if (ifNeeded) return true;
+
+    return _audioQuery.permissionsRequest();
   }
 
-  Future<int?> shuffleSongIndex() async {
+  Future<void> fetchSongs() async {
+    state = SongFetchState.LOADING;
+    final permission = await _requestAudioPermissionIfNeeded();
+    if (permission) {
+      songInfos = await _audioQuery.querySongs();
+      state = SongFetchState.LOADED;
+    } else {
+      state = SongFetchState.PERMISSION_DENIED;
+    }
+  }
+
+  int? shuffleSongIndex() {
     if (songInfos.isEmpty) return null;
 
     state = SongFetchState.LOADING;
@@ -35,10 +51,12 @@ class SongViewModel extends ChangeNotifier {
     return rand;
   }
 
-  File? getAlbumArtwork(SongInfo songInfo) {
+  Future<File?> getAlbumArtwork(AudioModel audioModel) async {
     try {
-      if (songInfo.albumArtwork.isEmpty) return null;
-      return File.fromUri(Uri.parse(songInfo.albumArtwork));
+      if (audioModel.albumId == null) return null;
+      final artWork = await _audioQuery.queryArtwork(audioModel.albumId!, ArtworkType.ALBUM);
+      if (artWork?.artwork == null) return null;
+      return File.fromRawPath(artWork!.artwork!);
     } catch (e) {
       return null;
     }

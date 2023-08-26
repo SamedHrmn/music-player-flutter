@@ -11,7 +11,7 @@ class PlayButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircularButtonAtom(
       size: size,
-      icon: Icon(Icons.play_arrow),
+      icon: const Icon(Icons.play_arrow),
       onTap: onTap,
     );
   }

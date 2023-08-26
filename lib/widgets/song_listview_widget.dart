@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:music_player/viewmodel/song_view_model.dart';
+import 'package:on_audio_query/on_audio_query.dart' hide context;
 import 'package:provider/provider.dart';
 
 import '../core/constants/size_constants.dart';
@@ -26,9 +26,11 @@ class _SongListViewWidgetState extends State<SongListViewWidget> {
     super.initState();
     scrollController = ScrollController();
     scrollController.addListener(() {
-      double val = scrollController.offset / (context.getHeight * 0.18);
-      setState(() {
-        topItem = val;
+      Future.microtask(() {
+        double val = scrollController.offset / (MediaQuery.sizeOf(context).height * 0.18);
+        setState(() {
+          topItem = val;
+        });
       });
     });
   }
@@ -77,7 +79,7 @@ class _SongListViewWidgetState extends State<SongListViewWidget> {
     );
   }
 
-  Widget songItemListTile(int index, List<SongInfo> songInfos, BuildContext context) {
+  Widget songItemListTile(int index, List<AudioModel> songInfos, BuildContext context) {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
@@ -134,8 +136,8 @@ class _SongListViewWidgetState extends State<SongListViewWidget> {
                       child: Align(
                         alignment: Alignment.centerRight,
                         child: Text(
-                          songInfos[index].artist,
-                          style: Theme.of(context).textTheme.caption?.copyWith(fontStyle: FontStyle.italic),
+                          songInfos[index].artist ?? '-',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic),
                           maxLines: 1,
                         ),
                       ),

@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_audio_query/flutter_audio_query.dart';
+import 'package:on_audio_query/on_audio_query.dart' hide context;
 import '../core/constants/size_constants.dart';
 import '../core/extension/size_extension.dart';
 import '../core/init/notifier/audio_process_notifier.dart';
@@ -15,7 +15,7 @@ import '../widgets/volume_control_widget.dart';
 
 class ControlPanelView extends StatefulWidget {
   final int selectedIndex;
-  final List<SongInfo> songInfo;
+  final List<AudioModel> songInfo;
 
   const ControlPanelView({Key? key, required this.songInfo, required this.selectedIndex}) : super(key: key);
 
@@ -45,20 +45,32 @@ class _ControlPanelViewState extends State<ControlPanelView> {
         child: Scaffold(
       body: Container(
         height: context.getHeight,
-        color: Theme.of(context).backgroundColor,
+        color: Theme.of(context).colorScheme.background,
         child: Stack(
           fit: StackFit.expand,
           children: [
-            BlurBackgroundWidget(
-              songInfo: widget.songInfo[widget.selectedIndex],
-            ),
+            StreamBuilder<int?>(
+                stream: _audioProcessNotifier.currentAudioIndex(),
+                builder: (context, snapshot) {
+                  if (snapshot.data == null) return const SizedBox();
+
+                  return BlurBackgroundWidget(
+                    songInfo: widget.songInfo[snapshot.data!],
+                  );
+                }),
             blurFilter(),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Expanded(
                   flex: 5,
-                  child: SongArtworkWidget(songInfo: widget.songInfo[widget.selectedIndex]),
+                  child: StreamBuilder<int?>(
+                      stream: _audioProcessNotifier.currentAudioIndex(),
+                      builder: (context, snapshot) {
+                        if (snapshot.data == null) return const SizedBox();
+
+                        return SongArtworkWidget(songInfo: widget.songInfo[snapshot.data!]);
+                      }),
                 ),
                 Expanded(flex: 4, child: songTextSection()),
               ],
@@ -108,21 +120,27 @@ class _ControlPanelViewState extends State<ControlPanelView> {
   songTextSection() => Container(
       padding: context.paddingAllMedium,
       child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Column(
-          children: <Widget>[
-            Text(
-              widget.songInfo[widget.selectedIndex].title,
-              style: Theme.of(context).textTheme.headline6,
-              maxLines: 3,
-              textAlign: TextAlign.center,
-            ),
-            Text(
-              widget.songInfo[widget.selectedIndex].artist,
-              style: Theme.of(context).textTheme.caption,
-              maxLines: 1,
-            ),
-          ],
-        ),
+        StreamBuilder<int?>(
+            stream: _audioProcessNotifier.currentAudioIndex(),
+            builder: (context, snapshot) {
+              if (snapshot.data == null) return const SizedBox();
+
+              return Column(
+                children: <Widget>[
+                  Text(
+                    widget.songInfo[snapshot.data!].title,
+                    style: Theme.of(context).textTheme.titleLarge,
+                    maxLines: 3,
+                    textAlign: TextAlign.center,
+                  ),
+                  Text(
+                    widget.songInfo[snapshot.data!].artist ?? '-',
+                    style: Theme.of(context).textTheme.bodySmall,
+                    maxLines: 1,
+                  ),
+                ],
+              );
+            }),
       ]));
 
   _buildProgessBar() {
@@ -142,15 +160,11 @@ class _ControlPanelViewState extends State<ControlPanelView> {
 
   buildPreviousMusicButton() {
     return PreviousSongButtonWidget(
-        size: context.getHeight,
-        onTap: () async {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => ControlPanelView(
-              songInfo: widget.songInfo,
-              selectedIndex: widget.selectedIndex != 0 ? widget.selectedIndex - 1 : widget.songInfo.length - 1,
-            ),
-          ));
-        });
+      size: context.getHeight,
+      onTap: () async {
+        await _audioProcessNotifier.previousSong();
+      },
+    );
   }
 
   buildPlayOrPauseMusicButton() {
@@ -179,14 +193,10 @@ class _ControlPanelViewState extends State<ControlPanelView> {
 
   buildNextMusicButton() {
     return NextSongButtonWidget(
-        size: context.getHeight,
-        onTap: () async {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => ControlPanelView(
-              songInfo: widget.songInfo,
-              selectedIndex: widget.selectedIndex != widget.songInfo.length - 1 ? widget.selectedIndex + 1 : 0,
-            ),
-          ));
-        });
+      size: context.getHeight,
+      onTap: () async {
+        await _audioProcessNotifier.nextSong();
+      },
+    );
   }
 }

@@ -55,7 +55,10 @@ class CustomAppBarWidgetState extends State<CustomAppBarWidget> with SingleTicke
               gradient: LinearGradient(
                 begin: Alignment.bottomLeft,
                 end: Alignment.bottomRight,
-                colors: [Theme.of(context).primaryColor, Theme.of(context).accentColor],
+                colors: [
+                  Theme.of(context).primaryColor,
+                  Theme.of(context).primaryColor,
+                ],
               ),
             ),
             child: Row(children: appBarActions),
@@ -70,13 +73,15 @@ class CustomAppBarWidgetState extends State<CustomAppBarWidget> with SingleTicke
         Flexible(
             child: Align(
           alignment: Alignment.centerRight,
-          child: IconButton(
-            color: context.watch<ThemeNotifier>().isThemeLight() ? AppThemeDark.instance.theme.primaryColor : AppThemeLight.instance.theme.primaryColor,
-            icon: const Icon(Icons.brightness_2),
-            onPressed: () {
-              context.read<ThemeNotifier>().changeTheme(context.read<ThemeNotifier>().isThemeLight() ? AppTheme.DARK : AppTheme.LIGHT);
-            },
-          ),
+          child: Consumer<ThemeNotifier>(builder: (context, themeNotifier, _) {
+            return IconButton(
+              color: themeNotifier.isThemeLight() ? AppThemeDark.instance.theme.primaryColor : AppThemeLight.instance.theme.primaryColor,
+              icon: const Icon(Icons.brightness_2),
+              onPressed: () {
+                context.read<ThemeNotifier>().changeTheme(themeNotifier.isThemeLight() ? AppTheme.DARK : AppTheme.LIGHT);
+              },
+            );
+          }),
         ))
       ];
 }
