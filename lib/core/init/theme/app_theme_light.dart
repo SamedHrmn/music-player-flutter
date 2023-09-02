@@ -11,15 +11,15 @@ class AppThemeLight extends IAppTheme {
 
   @override
   ThemeData get theme => ThemeData(
-        fontFamily: 'OpenSans',
+        fontFamily: 'EvilEmpire',
         brightness: Brightness.light,
-        primaryColor: const Color(0xfffeca90),
+        primaryColor: const Color(0xff4b3205),
         primaryColorLight: const Color(0xffffe7cc),
         primaryColorDark: const Color(0xff985101),
         hintColor: const Color(0xfffd8602),
-        canvasColor: const Color(0xfffafafa),
-        scaffoldBackgroundColor: const Color(0xfffafafa),
-        cardColor: const Color(0xffffffff),
+        canvasColor: const Color(0xff504221),
+        scaffoldBackgroundColor: const Color(0xffcfcbb0),
+        cardColor: const Color(0xff908768),
         dividerColor: const Color(0x1f000000),
         highlightColor: const Color(0x66bcbcbc),
         splashColor: const Color(0x66c8c8c8),
@@ -76,10 +76,10 @@ class AppThemeLight extends IAppTheme {
 
   _colorScheme() {
     return const ColorScheme(
-      primary: Color(0xfffeca90),
-      secondary: Color(0xfffd8602),
+      primary: Color(0xff4b3205),
+      secondary: Color(0xff504221),
       surface: Color(0xffffffff),
-      background: Color(0xfffecf9a),
+      background: Color(0xffcfcbb0),
       error: Color(0xffd32f2f),
       onPrimary: Color(0xff000000),
       onSecondary: Color(0xff000000),

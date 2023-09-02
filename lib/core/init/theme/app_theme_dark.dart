@@ -12,7 +12,7 @@ class AppThemeDark extends IAppTheme {
 
   @override
   ThemeData get theme => ThemeData(
-        fontFamily: 'OpenSans',
+        fontFamily: 'EvilEmpire',
         textTheme: textTheme,
         brightness: Brightness.dark,
         primaryColor: const Color(0xFF2E2E2E),

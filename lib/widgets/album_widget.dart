@@ -6,7 +6,6 @@ import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 
 import '../core/constants/asset_constants.dart';
-import '../core/constants/size_constants.dart';
 import '../core/extension/size_extension.dart';
 import '../viewmodel/song_view_model.dart';
 
@@ -18,33 +17,48 @@ class SongArtworkWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: context.paddingAllHigh,
-      child: Hero(
-        tag: songInfo.title,
-        child: FutureBuilder<File?>(
-          future: context.read<SongViewModel>().getAlbumArtwork(songInfo),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (snapshot.data == null && snapshot.connectionState == ConnectionState.done) {
-              return ClipRRect(
-                borderRadius: BorderRadius.circular((SizeConstants.HIGH_VALUE)),
-                child: Image.asset(
-                  AssetConstants.ARTWORK_PLACEHOLDER,
-                ),
-              );
-            }
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(64),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.4),
+              offset: const Offset(0, 8),
+              blurRadius: 20,
+              spreadRadius: 5,
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(64),
+          child: SizedBox(
+            width: context.getWidth * 0.4,
+            height: 320,
+            child: Hero(
+              tag: songInfo.title,
+              child: FutureBuilder<File?>(
+                future: context.read<SongViewModel>().getAlbumArtwork(songInfo),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.data == null && snapshot.connectionState == ConnectionState.done) {
+                    return Image.asset(
+                      AssetConstants.ARTWORK_PLACEHOLDER,
+                      fit: BoxFit.cover,
+                    );
+                  }
 
-            return ClipRRect(
-              borderRadius: BorderRadius.circular(SizeConstants.MEDIUM_VALUE),
-              child: Image.file(
-                snapshot.data!,
-                fit: BoxFit.fitWidth,
-                gaplessPlayback: true,
+                  return Image.file(
+                    snapshot.data!,
+                    fit: BoxFit.cover,
+                    gaplessPlayback: true,
+                  );
+                },
               ),
-            );
-          },
+            ),
+          ),
         ),
       ),
     );

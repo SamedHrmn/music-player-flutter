@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:music_player/core/constants/asset_constants.dart';
+import 'package:music_player/utils/helper_functions.dart';
 import 'package:music_player/viewmodel/song_view_model.dart';
+import 'package:music_player/widgets/app_text.dart';
 import 'package:on_audio_query/on_audio_query.dart' hide context;
 import 'package:provider/provider.dart';
 
 import '../core/constants/size_constants.dart';
 import '../core/extension/size_extension.dart';
 import '../views/control_panel_screen.dart';
-import 'custom_avatar_widget.dart';
 
 class SongListViewWidget extends StatefulWidget {
   const SongListViewWidget({Key? key}) : super(key: key);
@@ -16,7 +18,6 @@ class SongListViewWidget extends StatefulWidget {
 }
 
 class _SongListViewWidgetState extends State<SongListViewWidget> {
-  final List<MaterialColor> _colors = Colors.primaries;
   late final ScrollController scrollController;
   double topItem = 0;
   final opacityDuration = const Duration(milliseconds: 200);
@@ -44,9 +45,10 @@ class _SongListViewWidgetState extends State<SongListViewWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scrollbar(
-      child: Consumer<SongViewModel>(builder: (context, viewmodel, _) {
+    return Consumer<SongViewModel>(
+      builder: (context, viewmodel, _) {
         return ListView.builder(
+          padding: const EdgeInsets.only(top: 32),
           controller: scrollController,
           itemCount: viewmodel.songInfos.length,
           itemBuilder: (context, index) {
@@ -69,17 +71,25 @@ class _SongListViewWidgetState extends State<SongListViewWidget> {
                 child: Align(
                   heightFactor: 0.75,
                   alignment: Alignment.topCenter,
-                  child: songItemListTile(index, viewmodel.songInfos, context),
+                  child: _SongItemListCard(index: index, songInfos: viewmodel.songInfos),
                 ),
               ),
             );
           },
         );
-      }),
+      },
     );
   }
+}
 
-  Widget songItemListTile(int index, List<AudioModel> songInfos, BuildContext context) {
+class _SongItemListCard extends StatelessWidget {
+  const _SongItemListCard({super.key, required this.songInfos, required this.index});
+
+  final List<AudioModel> songInfos;
+  final int index;
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
@@ -92,58 +102,89 @@ class _SongListViewWidgetState extends State<SongListViewWidget> {
         );
       },
       child: Container(
-        height: context.getHeight * 0.2,
+        height: context.getHeight * 0.15,
         margin: context.paddingSymetricSpecific(SizeConstants.LOW_VALUE, SizeConstants.LOW_VALUE / 2),
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(SizeConstants.MEDIUM_VALUE),
+          borderRadius: BorderRadius.circular(SizeConstants.LOW_VALUE),
           boxShadow: const [
             BoxShadow(color: Colors.black, blurRadius: 10.0, offset: Offset(0, 2)),
           ],
         ),
-        child: Row(
+        child: Stack(
           children: [
-            Flexible(
-              flex: 2,
-              child: Padding(
-                padding: context.paddingOnlyLeft(SizeConstants.LOW_VALUE),
-                child: Hero(
-                  tag: index,
-                  child: CustomCircleAvatarWidget(
-                    color: _colors[index % _colors.length],
-                  ),
+            RotatedBox(
+              quarterTurns: 3,
+              child: Image.asset(
+                AssetConstants.CORNER_FRAME,
+                height: 64,
+              ),
+            ),
+            Align(
+              alignment: Alignment.topRight,
+              child: Image.asset(
+                AssetConstants.CORNER_FRAME,
+                height: 64,
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: RotatedBox(
+                quarterTurns: 2,
+                child: Image.asset(
+                  AssetConstants.CORNER_FRAME,
+                  height: 64,
                 ),
               ),
             ),
-            Expanded(
-              flex: 6,
-              child: Padding(
-                padding: context.paddingHorizontalMedium,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Flexible(
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          songInfos[index].title,
-                          textAlign: TextAlign.start,
-                          maxLines: 2,
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          songInfos[index].artist ?? '-',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic),
-                          maxLines: 1,
-                        ),
-                      ),
-                    ),
-                  ],
+            Align(
+              alignment: Alignment.bottomRight,
+              child: RotatedBox(
+                quarterTurns: 1,
+                child: Image.asset(
+                  AssetConstants.CORNER_FRAME,
+                  height: 64,
                 ),
+              ),
+            ),
+            Padding(
+              padding: context.paddingHorizontalHigh + context.paddingVerticalMedium,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Flexible(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          AppText(
+                            text: songInfos[index].title,
+                            maxLines: 2,
+                            size: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          AppText(
+                            text: HelperFunctions.instance.parseToMinutesSeconds(songInfos[index].duration ?? 0),
+                            maxLines: 2,
+                            size: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Flexible(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: AppText(
+                        text: songInfos[index].artist ?? '-',
+                        size: 10,
+                        maxLines: 1,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
