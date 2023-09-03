@@ -60,7 +60,6 @@ android {
            signingConfig signingConfigs.release
            shrinkResources false
            minifyEnabled false
-           useProguard false
        }
    }
 

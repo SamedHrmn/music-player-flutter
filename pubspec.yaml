@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.1+2
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -26,27 +26,17 @@ dependencies:
   
   cupertino_icons: ^1.0.2
 
-  audio_video_progress_bar: ^0.11.0
-  flutter_audio_query:
-    git:
-      url: https://github.com/sc4v3ng3r/flutter_audio_query.git
-      ref: f0fe6b9
-  flutter_launcher_icons: ^0.11.0
-  just_audio: ^0.9.31
-  lottie: ^2.2.0
+  audio_video_progress_bar: ^2.0.0
+  on_audio_query: 3.0.0-beta.0
+  just_audio: ^0.9.34
   provider: ^6.0.5
-  shared_preferences: ^2.0.17
-  volume_controller: ^2.0.6
+  shared_preferences: ^2.2.0
+  volume_controller: ^2.0.7
 dev_dependencies:
   flutter_lints: ^2.0.1
   flutter_test:
     sdk: flutter
 
-flutter_lints: ^2.0.1
-flutter_icons:
-  android: true
-  ios: true
-  image_path: "assets/app_launcher_icon.png"
 
 
 # For information on the generic Dart part of this file, see the
@@ -75,13 +65,9 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: OpenSans
+    - family: EvilEmpire
       fonts:
-        - asset: assets/fonts/open_sans_regular.ttf
-        - asset: assets/fonts/open_sans_italic.ttf
-          style: italic
-        - asset: assets/fonts/open_Sans_bold.ttf
-          weight: 700
+        - asset: assets/fonts/evil_empire.otf     
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

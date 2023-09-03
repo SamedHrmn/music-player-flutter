@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 
 class AudioProcessNotifier {
-  final List<SongInfo> songList;
+  final List<AudioModel> songList;
   AudioPlayer? _audioPlayer;
   final int selectedIndex;
 
@@ -23,13 +23,26 @@ class AudioProcessNotifier {
   List<AudioSource> getAllAudioSource() {
     List<AudioSource> sources = [];
     for (int i = 0; i < songList.length; i++) {
-      sources.add(AudioSource.uri(Uri.file(songList[i].filePath)));
+      if (songList[i].uri == null) continue;
+
+      sources.add(AudioSource.uri(Uri.parse(songList[i].uri!)));
     }
     return sources;
   }
 
+  Stream<int?>? currentAudioIndex() => _audioPlayer?.currentIndexStream;
+
+  Future<void> nextSong() async {
+    await _audioPlayer?.seekToNext();
+  }
+
+  Future<void> previousSong() async {
+    await _audioPlayer?.seekToPrevious();
+  }
+
   _initPlayer() async {
     _audioPlayer = AudioPlayer();
+    await _audioPlayer?.setLoopMode(LoopMode.off);
     _audioPlayer?.setAudioSource(ConcatenatingAudioSource(children: getAllAudioSource()), initialIndex: selectedIndex);
     _audioPlayer?.play();
 

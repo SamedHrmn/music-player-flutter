@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:music_player/core/constants/color_constants.dart';
 import 'package:volume_controller/volume_controller.dart';
 
 class VolumeControlWidget extends StatefulWidget {
@@ -33,32 +34,46 @@ class _VolumeControlWidgetState extends State<VolumeControlWidget> {
     return Row(
       children: [
         Flexible(
-          child: Slider(
-            activeColor: Theme.of(context).colorScheme.secondary,
-            inactiveColor: Colors.white30,
-            min: 0,
-            max: 1,
-            onChanged: (double value) {
-              _setVolumeValue = value;
-              VolumeController().setVolume(_setVolumeValue);
-              setState(() {});
-            },
-            value: _setVolumeValue,
+          child: Theme(
+            data: ThemeData(
+              sliderTheme: const SliderThemeData(
+                thumbShape: RoundSliderThumbShape(enabledThumbRadius: 8),
+              ),
+            ),
+            child: Slider(
+              activeColor: ColorConstants.secondary,
+              inactiveColor: Colors.white30,
+              min: 0,
+              max: 1,
+              onChanged: (double value) {
+                setState(() {
+                  _setVolumeValue = value;
+                  VolumeController().setVolume(_setVolumeValue, showSystemUI: false);
+                });
+              },
+              value: _setVolumeValue,
+            ),
           ),
         ),
         IconButton(
           onPressed: () {
             VolumeController().getVolume().then((volume) {
               if (volume > 0) {
-                VolumeController().muteVolume();
+                VolumeController().muteVolume(showSystemUI: false);
+                setState(() {
+                  _setVolumeValue = 0;
+                });
               } else {
-                VolumeController().setVolume(0.33);
+                VolumeController().setVolume(0.33, showSystemUI: false);
+                setState(() {
+                  _setVolumeValue = 0.33;
+                });
               }
             });
           },
           icon: Icon(
-            Icons.volume_off,
-            color: Theme.of(context).colorScheme.secondary,
+            _setVolumeValue == 0 ? Icons.volume_off_rounded : Icons.volume_up_rounded,
+            color: ColorConstants.secondary,
           ),
         ),
       ],

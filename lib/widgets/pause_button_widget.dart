@@ -12,7 +12,7 @@ class PauseButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircularButtonAtom(
       size: size,
-      icon: Icon(Icons.pause),
+      icon: const Icon(Icons.pause),
       onTap: onTap,
     );
   }

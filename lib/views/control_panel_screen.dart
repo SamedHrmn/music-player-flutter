@@ -1,12 +1,12 @@
-import 'dart:ui';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_audio_query/flutter_audio_query.dart';
-import '../core/constants/size_constants.dart';
+import 'package:music_player/core/constants/asset_constants.dart';
+import 'package:music_player/core/constants/color_constants.dart';
+import 'package:music_player/widgets/app_text.dart';
+import 'package:on_audio_query/on_audio_query.dart' hide context;
 import '../core/extension/size_extension.dart';
-import '../core/init/notifier/audio_process_notifier.dart';
+import '../utils/audio_process_notifier.dart';
 import '../widgets/album_widget.dart';
-import '../widgets/blur_widget.dart';
 import '../widgets/next_song_button_widget.dart';
 import '../widgets/pause_button_widget.dart';
 import '../widgets/play_button_widget.dart';
@@ -15,7 +15,7 @@ import '../widgets/volume_control_widget.dart';
 
 class ControlPanelView extends StatefulWidget {
   final int selectedIndex;
-  final List<SongInfo> songInfo;
+  final List<AudioModel> songInfo;
 
   const ControlPanelView({Key? key, required this.songInfo, required this.selectedIndex}) : super(key: key);
 
@@ -41,116 +41,139 @@ class _ControlPanelViewState extends State<ControlPanelView> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-      body: Container(
-        height: context.getHeight,
-        color: Theme.of(context).backgroundColor,
+    return Scaffold(
+      body: SafeArea(
         child: Stack(
           fit: StackFit.expand,
           children: [
-            BlurBackgroundWidget(
-              songInfo: widget.songInfo[widget.selectedIndex],
+            detailBackground(),
+            artworkAndTitle(),
+            controlPanel(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Align controlPanel() {
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Padding(
+        padding: context.paddingAllLow,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: context.paddingOnlyBottom(8),
+              child: const VolumeControlWidget(),
             ),
-            blurFilter(),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+            Padding(
+              padding: context.paddingOnlyBottom(16),
+              child: buildProgessBar(),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Expanded(
-                  flex: 5,
-                  child: SongArtworkWidget(songInfo: widget.songInfo[widget.selectedIndex]),
-                ),
-                Expanded(flex: 4, child: songTextSection()),
+                buildPreviousMusicButton(),
+                buildPlayOrPauseMusicButton(),
+                buildNextMusicButton(),
               ],
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: context.paddingAllLow,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: context.paddingOnlyBottom(SizeConstants.LOW_VALUE),
-                      child: const VolumeControlWidget(),
-                    ),
-                    Padding(
-                      padding: context.paddingOnlyBottom(SizeConstants.MEDIUM_VALUE),
-                      child: _buildProgessBar(),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        buildPreviousMusicButton(),
-                        buildPlayOrPauseMusicButton(),
-                        buildNextMusicButton(),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
             ),
           ],
         ),
       ),
-    ));
+    );
   }
 
-  blurFilter() {
-    return BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-      child: Container(
-        decoration: BoxDecoration(color: Colors.black87.withOpacity(0.1)),
+  Column artworkAndTitle() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        StreamBuilder<int?>(
+            stream: _audioProcessNotifier.currentAudioIndex(),
+            builder: (context, snapshot) {
+              if (snapshot.data == null) return const SizedBox();
+
+              return SongArtworkWidget(songInfo: widget.songInfo[snapshot.data!]);
+            }),
+        Expanded(
+          child: songTextSection(),
+        ),
+      ],
+    );
+  }
+
+  Positioned detailBackground() {
+    return Positioned.fill(
+      child: Image.asset(
+        AssetConstants.DETAIL_BACKGROUND,
+        fit: BoxFit.cover,
       ),
     );
   }
 
   songTextSection() => Container(
-      padding: context.paddingAllMedium,
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Column(
-          children: <Widget>[
-            Text(
-              widget.songInfo[widget.selectedIndex].title,
-              style: Theme.of(context).textTheme.headline6,
-              maxLines: 3,
-              textAlign: TextAlign.center,
-            ),
-            Text(
-              widget.songInfo[widget.selectedIndex].artist,
-              style: Theme.of(context).textTheme.caption,
-              maxLines: 1,
+        padding: context.paddingAllMedium,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            StreamBuilder<int?>(
+              stream: _audioProcessNotifier.currentAudioIndex(),
+              builder: (context, snapshot) {
+                if (snapshot.data == null) return const SizedBox();
+
+                return Column(
+                  children: <Widget>[
+                    AppText(
+                      text: widget.songInfo[snapshot.data!].title,
+                      maxLines: 3,
+                      fontWeight: FontWeight.bold,
+                      size: 24,
+                      textAlign: TextAlign.center,
+                    ),
+                    AppText(
+                      text: widget.songInfo[snapshot.data!].artist ?? '-',
+                      maxLines: 1,
+                    ),
+                  ],
+                );
+              },
             ),
           ],
         ),
-      ]));
+      );
 
-  _buildProgessBar() {
-    return ValueListenableBuilder<ProgressBarState>(
-      valueListenable: _audioProcessNotifier.progressNotifier,
-      builder: (_, value, __) => ProgressBar(
-        thumbColor: Theme.of(context).colorScheme.secondary,
-        baseBarColor: Theme.of(context).primaryColorLight,
-        progressBarColor: Theme.of(context).colorScheme.secondary,
-        progress: value.current,
-        buffered: value.buffered,
-        total: value.total,
-        onSeek: _audioProcessNotifier.seek,
+  buildProgessBar() {
+    return Padding(
+      padding: context.paddingHorizontalLow,
+      child: ValueListenableBuilder<ProgressBarState>(
+        valueListenable: _audioProcessNotifier.progressNotifier,
+        builder: (_, value, __) => ProgressBar(
+          thumbColor: ColorConstants.secondary,
+          baseBarColor: ColorConstants.primaryLight,
+          progressBarColor: ColorConstants.secondary,
+          thumbRadius: 8,
+          timeLabelTextStyle: const TextStyle(
+            fontFamily: 'EvilEmpire',
+            fontSize: 20,
+            color: ColorConstants.primary,
+          ),
+          progress: value.current,
+          buffered: value.buffered,
+          total: value.total,
+          onSeek: _audioProcessNotifier.seek,
+        ),
       ),
     );
   }
 
   buildPreviousMusicButton() {
     return PreviousSongButtonWidget(
-        size: context.getHeight,
-        onTap: () async {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => ControlPanelView(
-              songInfo: widget.songInfo,
-              selectedIndex: widget.selectedIndex != 0 ? widget.selectedIndex - 1 : widget.songInfo.length - 1,
-            ),
-          ));
-        });
+      size: context.getHeight,
+      onTap: () async {
+        await _audioProcessNotifier.previousSong();
+      },
+    );
   }
 
   buildPlayOrPauseMusicButton() {
@@ -168,25 +191,21 @@ class _ControlPanelViewState extends State<ControlPanelView> {
         }
 
         return PauseButtonWidget(
-            size: context.getHeight,
-            onTap: () async {
-              _audioProcessNotifier.pause();
-              setState(() {});
-            });
+          size: context.getHeight,
+          onTap: () async {
+            _audioProcessNotifier.pause();
+          },
+        );
       },
     );
   }
 
   buildNextMusicButton() {
     return NextSongButtonWidget(
-        size: context.getHeight,
-        onTap: () async {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (context) => ControlPanelView(
-              songInfo: widget.songInfo,
-              selectedIndex: widget.selectedIndex != widget.songInfo.length - 1 ? widget.selectedIndex + 1 : 0,
-            ),
-          ));
-        });
+      size: context.getHeight,
+      onTap: () async {
+        await _audioProcessNotifier.nextSong();
+      },
+    );
   }
 }
