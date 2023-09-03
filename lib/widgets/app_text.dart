@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:music_player/core/constants/color_constants.dart';
 
 class AppText extends StatelessWidget {
   const AppText({super.key, required this.text, this.size, this.fontWeight, this.maxLines, this.color, this.textAlign});
@@ -19,7 +20,7 @@ class AppText extends StatelessWidget {
         fontFamily: 'EvilEmpire',
         fontSize: size,
         fontWeight: fontWeight,
-        color: color ?? Theme.of(context).primaryColor,
+        color: color ?? ColorConstants.primary,
       ),
       maxLines: maxLines,
     );

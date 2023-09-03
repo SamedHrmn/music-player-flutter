@@ -1,6 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
-class AssetConstants {
+mixin class AssetConstants {
   static const String _ASSET_PATH = 'assets/';
   static const String _FONT_PATH = '${_ASSET_PATH}fonts/';
   static const String FONT_OPEN_SANS_REGULAR = '${_FONT_PATH}open_sans_regular.ttf';

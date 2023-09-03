@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:music_player/core/constants/color_constants.dart';
 
 import '../core/components/circular_button_atom.dart';
 
@@ -11,7 +12,7 @@ class PlayButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircularButtonAtom(
       size: size,
-      icon: const Icon(Icons.play_arrow),
+      icon: const Icon(Icons.play_arrow, color: ColorConstants.primaryLight),
       onTap: onTap,
     );
   }

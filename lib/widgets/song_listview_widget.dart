@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:music_player/core/constants/asset_constants.dart';
+import 'package:music_player/core/constants/color_constants.dart';
 import 'package:music_player/utils/helper_functions.dart';
 import 'package:music_player/viewmodel/song_view_model.dart';
 import 'package:music_player/widgets/app_text.dart';
 import 'package:on_audio_query/on_audio_query.dart' hide context;
 import 'package:provider/provider.dart';
-
-import '../core/constants/size_constants.dart';
 import '../core/extension/size_extension.dart';
 import '../views/control_panel_screen.dart';
 
@@ -48,7 +47,7 @@ class _SongListViewWidgetState extends State<SongListViewWidget> {
     return Consumer<SongViewModel>(
       builder: (context, viewmodel, _) {
         return ListView.builder(
-          padding: const EdgeInsets.only(top: 32),
+          padding: const EdgeInsets.only(top: 24),
           controller: scrollController,
           itemCount: viewmodel.songInfos.length,
           itemBuilder: (context, index) {
@@ -103,10 +102,10 @@ class _SongItemListCard extends StatelessWidget {
       },
       child: Container(
         height: context.getHeight * 0.15,
-        margin: context.paddingSymetricSpecific(SizeConstants.LOW_VALUE, SizeConstants.LOW_VALUE / 2),
+        margin: context.paddingSymetricSpecific(8, 4),
         decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(SizeConstants.LOW_VALUE),
+          color: ColorConstants.cardColor,
+          borderRadius: BorderRadius.circular(8),
           boxShadow: const [
             BoxShadow(color: Colors.black, blurRadius: 10.0, offset: Offset(0, 2)),
           ],
@@ -156,19 +155,17 @@ class _SongItemListCard extends StatelessWidget {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          AppText(
-                            text: songInfos[index].title,
-                            maxLines: 2,
-                            size: 14,
-                            fontWeight: FontWeight.w600,
+                          Expanded(
+                            child: AppText(
+                              text: songInfos[index].title,
+                              maxLines: 2,
+                              size: 18,
+                            ),
                           ),
                           AppText(
                             text: HelperFunctions.instance.parseToMinutesSeconds(songInfos[index].duration ?? 0),
-                            maxLines: 2,
                             size: 14,
-                            fontWeight: FontWeight.w600,
                           ),
                         ],
                       ),
@@ -204,7 +201,7 @@ class CustomScrollPhysics extends ScrollPhysics {
 
   @override
   Simulation createBallisticSimulation(ScrollMetrics position, double velocity) {
-    final tolerance = this.tolerance;
+    final tolerance = toleranceFor(position);
     if ((velocity.abs() < tolerance.velocity) ||
         (velocity > 0.0 && position.pixels >= position.maxScrollExtent) ||
         (velocity < 0.0 && position.pixels <= position.minScrollExtent)) {

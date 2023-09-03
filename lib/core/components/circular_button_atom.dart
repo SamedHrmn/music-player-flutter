@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../constants/color_constants.dart';
+
 class CircularButtonAtom extends StatelessWidget {
   final Widget icon;
   final VoidCallback onTap;
@@ -14,6 +16,7 @@ class CircularButtonAtom extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: CircleAvatar(
+          backgroundColor: ColorConstants.primary,
           child: icon,
         ),
       ),

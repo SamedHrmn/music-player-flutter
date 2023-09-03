@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'core/cache/app_shared_pref.dart';
-import 'core/init/notifier/theme_notifier.dart';
 import 'viewmodel/song_view_model.dart';
 import 'views/home_screen.dart';
 
@@ -11,16 +9,9 @@ void main() async {
   await AppSharedPreferences.initPref();
 
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (context) => ThemeNotifier(),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => SongViewModel(),
-        )
-      ],
-      child: const MyApp(),
+    ChangeNotifierProvider(
+      create: (context) => SongViewModel(),
+      builder: (context, child) => const MyApp(),
     ),
   );
 }
@@ -30,10 +21,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: context.watch<ThemeNotifier>().currentTheme,
-      home: const HomeScreen(),
+      home: HomeScreen(),
     );
   }
 }

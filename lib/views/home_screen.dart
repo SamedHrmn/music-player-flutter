@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:music_player/core/constants/color_constants.dart';
+import 'package:music_player/core/constants/string_constants.dart';
+import 'package:music_player/widgets/app_text.dart';
 import 'package:provider/provider.dart';
 
 import '../viewmodel/song_view_model.dart';
@@ -27,32 +30,20 @@ class HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: ColorConstants.background,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            ElevatedButton(
-              onPressed: () {
-                final safeContext = Navigator.of(context);
-                final randIndex = context.read<SongViewModel>().shuffleSongIndex();
-                if (randIndex == null) return;
-                safeContext.push(
-                  MaterialPageRoute(
-                    builder: (context) => ControlPanelView(
-                      songInfo: context.read<SongViewModel>().songInfos,
-                      selectedIndex: randIndex,
-                    ),
+            const Padding(
+              padding: EdgeInsets.only(left: 8, right: 8, top: 16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: AppText(text: StringConstants.musicPlayer, size: 32),
                   ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                minimumSize: Size.zero,
-                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 32),
-              ),
-              child: Icon(
-                Icons.shuffle,
-                color: Theme.of(context).colorScheme.background,
+                  _ShuffleButton(),
+                ],
               ),
             ),
             Expanded(
@@ -64,11 +55,11 @@ class HomeScreenState extends State<HomeScreen> {
                     );
                   } else if (viewmodel.state == SongFetchState.LOADED && viewmodel.songInfos.isEmpty) {
                     return const Center(
-                      child: Text("No song data"),
+                      child: AppText(text: StringConstants.noSongData),
                     );
                   } else if (viewmodel.state == SongFetchState.PERMISSION_DENIED) {
                     return const Center(
-                      child: Text("Please allow media permission."),
+                      child: AppText(text: StringConstants.allowMediaPermission),
                     );
                   }
 
@@ -78,6 +69,38 @@ class HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ShuffleButton extends StatelessWidget {
+  const _ShuffleButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        final safeContext = Navigator.of(context);
+        final randIndex = context.read<SongViewModel>().shuffleSongIndex();
+        if (randIndex == null) return;
+        safeContext.push(
+          MaterialPageRoute(
+            builder: (context) => ControlPanelView(
+              songInfo: context.read<SongViewModel>().songInfos,
+              selectedIndex: randIndex,
+            ),
+          ),
+        );
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: ColorConstants.primary,
+        minimumSize: Size.zero,
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 32),
+      ),
+      child: const Icon(
+        Icons.shuffle,
+        color: ColorConstants.background,
       ),
     );
   }
