@@ -1,3 +1,10 @@
+import 'dart:developer';
+
+import 'package:music_player/core/constants/string_constants.dart';
+import 'package:url_launcher/url_launcher.dart';
+// ignore: unused_import
+import 'package:url_launcher/url_launcher_string.dart';
+
 class HelperFunctions {
   static final HelperFunctions instance = HelperFunctions._init();
 
@@ -19,5 +26,13 @@ class HelperFunctions {
 
     data += seconds.toString();
     return data;
+  }
+
+  Future<void> openPrivacyPolicyUrl() async {
+    try {
+      await launchUrl(Uri.parse(StringConstants.privacyPolicyUrl));
+    } catch (e) {
+      log(e.toString());
+    }
   }
 }
