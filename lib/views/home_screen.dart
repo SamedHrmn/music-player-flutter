@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:music_player/core/constants/color_constants.dart';
 import 'package:music_player/core/constants/string_constants.dart';
+import 'package:music_player/utils/helper_functions.dart';
 import 'package:music_player/widgets/app_text.dart';
 import 'package:provider/provider.dart';
 
@@ -18,6 +19,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
+  final menuController = MenuController();
+
   @override
   void initState() {
     super.initState();
@@ -35,14 +38,14 @@ class HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Padding(
-              padding: EdgeInsets.only(left: 8, right: 8, top: 16),
+            Padding(
+              padding: const EdgeInsets.only(left: 8, right: 8, top: 16),
               child: Row(
                 children: [
                   Expanded(
-                    child: AppText(text: StringConstants.musicPlayer, size: 32),
+                    child: header(),
                   ),
-                  _ShuffleButton(),
+                  const _ShuffleButton(),
                 ],
               ),
             ),
@@ -70,6 +73,44 @@ class HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Column header() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const AppText(text: StringConstants.musicPlayer, size: 32),
+        SubmenuButton(
+          controller: menuController,
+          menuStyle: const MenuStyle(
+            padding: MaterialStatePropertyAll(
+              EdgeInsets.symmetric(horizontal: 8),
+            ),
+          ),
+          style: const ButtonStyle(
+            overlayColor: MaterialStatePropertyAll(Colors.transparent),
+            minimumSize: MaterialStatePropertyAll(Size.fromHeight(32)),
+            padding: MaterialStatePropertyAll(EdgeInsets.zero),
+          ),
+          menuChildren: [
+            TextButton(
+              onPressed: () async {
+                menuController.close();
+                await HelperFunctions.instance.openPrivacyPolicyUrl();
+              },
+              style: const ButtonStyle(
+                overlayColor: MaterialStatePropertyAll(ColorConstants.cardColor),
+                padding: MaterialStatePropertyAll(EdgeInsets.symmetric(horizontal: 8)),
+              ),
+              child: const AppText(text: StringConstants.privacyPolicy),
+            ),
+          ],
+          child: const AppText(
+            text: StringConstants.about,
+          ),
+        )
+      ],
     );
   }
 }
