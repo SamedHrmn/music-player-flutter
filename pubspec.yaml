@@ -24,17 +24,17 @@ dependencies:
   flutter:
     sdk: flutter
   
-  cupertino_icons: ^1.0.2
+  cupertino_icons: ^1.0.6
 
-  audio_video_progress_bar: ^2.0.0
+  audio_video_progress_bar: ^2.0.1
   on_audio_query: 3.0.0-beta.0
-  just_audio: ^0.9.34
-  provider: ^6.0.5
-  shared_preferences: ^2.2.0
+  just_audio: ^0.9.36
+  provider: ^6.1.1
+  shared_preferences: ^2.2.2
   volume_controller: ^2.0.7
-  url_launcher: ^6.1.14
+  url_launcher: ^6.2.3
 dev_dependencies:
-  flutter_lints: ^2.0.1
+  flutter_lints: ^2.0.3
   flutter_test:
     sdk: flutter
 
