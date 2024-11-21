@@ -2,22 +2,21 @@ import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:music_player/core/constants/asset_constants.dart';
 import 'package:music_player/core/constants/color_constants.dart';
+import 'package:music_player/core/extension/size_extension.dart';
+import 'package:music_player/utils/audio_process_notifier.dart';
+import 'package:music_player/widgets/album_widget.dart';
 import 'package:music_player/widgets/app_text.dart';
-import 'package:on_audio_query/on_audio_query.dart' hide context;
-import '../core/extension/size_extension.dart';
-import '../utils/audio_process_notifier.dart';
-import '../widgets/album_widget.dart';
-import '../widgets/next_song_button_widget.dart';
-import '../widgets/pause_button_widget.dart';
-import '../widgets/play_button_widget.dart';
-import '../widgets/previous_song_button_widget.dart';
-import '../widgets/volume_control_widget.dart';
+import 'package:music_player/widgets/next_song_button_widget.dart';
+import 'package:music_player/widgets/pause_button_widget.dart';
+import 'package:music_player/widgets/play_button_widget.dart';
+import 'package:music_player/widgets/previous_song_button_widget.dart';
+import 'package:music_player/widgets/volume_control_widget.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 
 class ControlPanelView extends StatefulWidget {
+  const ControlPanelView({required this.songInfo, required this.selectedIndex, super.key});
   final int selectedIndex;
-  final List<AudioModel> songInfo;
-
-  const ControlPanelView({Key? key, required this.songInfo, required this.selectedIndex}) : super(key: key);
+  final List<SongModel> songInfo;
 
   @override
   _ControlPanelViewState createState() => _ControlPanelViewState();
@@ -87,15 +86,15 @@ class _ControlPanelViewState extends State<ControlPanelView> {
 
   Column artworkAndTitle() {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         StreamBuilder<int?>(
-            stream: _audioProcessNotifier.currentAudioIndex(),
-            builder: (context, snapshot) {
-              if (snapshot.data == null) return const SizedBox();
+          stream: _audioProcessNotifier.currentAudioIndex(),
+          builder: (context, snapshot) {
+            if (snapshot.data == null) return const SizedBox();
 
-              return SongArtworkWidget(songInfo: widget.songInfo[snapshot.data!]);
-            }),
+            return SongArtworkWidget(songInfo: widget.songInfo[snapshot.data!]);
+          },
+        ),
         Expanded(
           child: songTextSection(),
         ),
@@ -112,7 +111,7 @@ class _ControlPanelViewState extends State<ControlPanelView> {
     );
   }
 
-  songTextSection() => Container(
+  Widget songTextSection() => Container(
         padding: context.paddingAllMedium,
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -143,7 +142,7 @@ class _ControlPanelViewState extends State<ControlPanelView> {
         ),
       );
 
-  buildProgessBar() {
+  Widget buildProgessBar() {
     return Padding(
       padding: context.paddingHorizontalLow,
       child: ValueListenableBuilder<ProgressBarState>(
@@ -167,7 +166,7 @@ class _ControlPanelViewState extends State<ControlPanelView> {
     );
   }
 
-  buildPreviousMusicButton() {
+  Widget buildPreviousMusicButton() {
     return PreviousSongButtonWidget(
       size: context.getHeight,
       onTap: () async {
@@ -176,31 +175,30 @@ class _ControlPanelViewState extends State<ControlPanelView> {
     );
   }
 
-  buildPlayOrPauseMusicButton() {
+  Widget buildPlayOrPauseMusicButton() {
     return ValueListenableBuilder<ButtonState>(
       valueListenable: _audioProcessNotifier.buttonNotifier,
       builder: (context, value, child) {
         switch (value) {
+          case ButtonState.loading:
+            return const SizedBox();
           case ButtonState.paused:
-            return PlayButtonWidget(size: context.getHeight, onTap: _audioProcessNotifier.play);
+            return PlayButtonWidget(
+              size: context.getHeight,
+              onTap: _audioProcessNotifier.play,
+            );
 
           case ButtonState.playing:
-            return PauseButtonWidget(size: context.getHeight, onTap: _audioProcessNotifier.pause);
-
-          default:
+            return PauseButtonWidget(
+              size: context.getHeight,
+              onTap: _audioProcessNotifier.pause,
+            );
         }
-
-        return PauseButtonWidget(
-          size: context.getHeight,
-          onTap: () async {
-            _audioProcessNotifier.pause();
-          },
-        );
       },
     );
   }
 
-  buildNextMusicButton() {
+  Widget buildNextMusicButton() {
     return NextSongButtonWidget(
       size: context.getHeight,
       onTap: () async {

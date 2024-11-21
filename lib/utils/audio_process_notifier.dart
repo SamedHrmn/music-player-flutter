@@ -3,7 +3,10 @@ import 'package:just_audio/just_audio.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class AudioProcessNotifier {
-  final List<AudioModel> songList;
+  AudioProcessNotifier({required this.selectedIndex, required this.songList}) {
+    _initPlayer();
+  }
+  final List<SongModel> songList;
   AudioPlayer? _audioPlayer;
   final int selectedIndex;
 
@@ -16,13 +19,9 @@ class AudioProcessNotifier {
   );
   final buttonNotifier = ValueNotifier<ButtonState>(ButtonState.playing);
 
-  AudioProcessNotifier({required this.selectedIndex, required this.songList}) {
-    _initPlayer();
-  }
-
   List<AudioSource> getAllAudioSource() {
-    List<AudioSource> sources = [];
-    for (int i = 0; i < songList.length; i++) {
+    final sources = <AudioSource>[];
+    for (var i = 0; i < songList.length; i++) {
       if (songList[i].uri == null) continue;
 
       sources.add(AudioSource.uri(Uri.parse(songList[i].uri!)));
@@ -40,11 +39,11 @@ class AudioProcessNotifier {
     await _audioPlayer?.seekToPrevious();
   }
 
-  _initPlayer() async {
+  Future<void> _initPlayer() async {
     _audioPlayer = AudioPlayer();
     await _audioPlayer?.setLoopMode(LoopMode.off);
-    _audioPlayer?.setAudioSource(ConcatenatingAudioSource(children: getAllAudioSource()), initialIndex: selectedIndex);
-    _audioPlayer?.play();
+    await _audioPlayer?.setAudioSource(ConcatenatingAudioSource(children: getAllAudioSource()), initialIndex: selectedIndex);
+    await _audioPlayer?.play();
 
     _audioPlayer?.playerStateStream.listen((playerState) {
       final isPlaying = playerState.playing;
@@ -89,20 +88,20 @@ class AudioProcessNotifier {
     });
   }
 
-  void play() async {
-    _audioPlayer?.play();
+  Future<void> play() async {
+    await _audioPlayer?.play();
   }
 
-  void pause() {
-    _audioPlayer?.pause();
+  Future<void> pause() async {
+    await _audioPlayer?.pause();
   }
 
-  void seek(Duration position) {
-    _audioPlayer?.seek(position);
+  Future<void> seek(Duration position) async {
+    await _audioPlayer?.seek(position);
   }
 
-  void dispose() {
-    _audioPlayer?.dispose();
+  Future<void> dispose() async {
+    await _audioPlayer?.dispose();
   }
 }
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:music_player/core/constants/color_constants.dart';
 
 class AppText extends StatelessWidget {
-  const AppText({super.key, required this.text, this.size, this.fontWeight, this.maxLines, this.color, this.textAlign});
+  const AppText({required this.text, super.key, this.size, this.fontWeight, this.maxLines, this.color, this.textAlign});
 
   final String text;
   final double? size;

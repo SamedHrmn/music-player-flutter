@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:music_player/core/constants/asset_constants.dart';
 import 'package:music_player/core/constants/color_constants.dart';
+import 'package:music_player/core/extension/size_extension.dart';
 import 'package:music_player/utils/helper_functions.dart';
 import 'package:music_player/viewmodel/song_view_model.dart';
+import 'package:music_player/views/control_panel_screen.dart';
 import 'package:music_player/widgets/app_text.dart';
-import 'package:on_audio_query/on_audio_query.dart' hide context;
+import 'package:on_audio_query/on_audio_query.dart';
+
 import 'package:provider/provider.dart';
-import '../core/extension/size_extension.dart';
-import '../views/control_panel_screen.dart';
 
 class SongListViewWidget extends StatefulWidget {
-  const SongListViewWidget({Key? key}) : super(key: key);
+  const SongListViewWidget({super.key});
 
   @override
   _SongListViewWidgetState createState() => _SongListViewWidgetState();
@@ -25,9 +26,10 @@ class _SongListViewWidgetState extends State<SongListViewWidget> {
   void initState() {
     super.initState();
     scrollController = ScrollController();
+
     scrollController.addListener(() {
-      Future.microtask(() {
-        double val = scrollController.offset / (MediaQuery.sizeOf(context).height * 0.18);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final val = scrollController.offset / (MediaQuery.sizeOf(context).height * 0.18);
         setState(() {
           topItem = val;
         });
@@ -38,7 +40,6 @@ class _SongListViewWidgetState extends State<SongListViewWidget> {
   @override
   void dispose() {
     scrollController.dispose();
-
     super.dispose();
   }
 
@@ -51,7 +52,7 @@ class _SongListViewWidgetState extends State<SongListViewWidget> {
           controller: scrollController,
           itemCount: viewmodel.songInfos.length,
           itemBuilder: (context, index) {
-            double scale = 1.0;
+            var scale = 1.0;
             if (topItem > 0.5) {
               scale = index + 0.5 - topItem;
               if (scale < 0) {
@@ -66,7 +67,7 @@ class _SongListViewWidgetState extends State<SongListViewWidget> {
               duration: opacityDuration,
               child: Transform(
                 transform: Matrix4.identity()..scale(scale, scale),
-                alignment: index % 2 == 0 ? Alignment.topLeft : Alignment.topRight,
+                alignment: index.isEven ? Alignment.topLeft : Alignment.topRight,
                 child: Align(
                   heightFactor: 0.75,
                   alignment: Alignment.topCenter,
@@ -82,9 +83,9 @@ class _SongListViewWidgetState extends State<SongListViewWidget> {
 }
 
 class _SongItemListCard extends StatelessWidget {
-  const _SongItemListCard({super.key, required this.songInfos, required this.index});
+  const _SongItemListCard({required this.songInfos, required this.index});
 
-  final List<AudioModel> songInfos;
+  final List<SongModel> songInfos;
   final int index;
 
   @override
@@ -92,7 +93,7 @@ class _SongItemListCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
-          MaterialPageRoute(
+          MaterialPageRoute<void>(
             builder: (context) => ControlPanelView(
               songInfo: songInfos,
               selectedIndex: index,
@@ -107,7 +108,7 @@ class _SongItemListCard extends StatelessWidget {
           color: ColorConstants.cardColor,
           borderRadius: BorderRadius.circular(8),
           boxShadow: const [
-            BoxShadow(color: Colors.black, blurRadius: 10.0, offset: Offset(0, 2)),
+            BoxShadow(blurRadius: 10, offset: Offset(0, 2)),
           ],
         ),
         child: Stack(
@@ -164,7 +165,7 @@ class _SongItemListCard extends StatelessWidget {
                             ),
                           ),
                           AppText(
-                            text: HelperFunctions.instance.parseToMinutesSeconds(songInfos[index].duration ?? 0),
+                            text: HelperFunctions.parseToMinutesSeconds(songInfos[index].duration ?? 0),
                             size: 14,
                           ),
                         ],

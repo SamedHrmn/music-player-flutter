@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../constants/color_constants.dart';
+import 'package:music_player/core/constants/color_constants.dart';
 
 class CircularButtonAtom extends StatelessWidget {
+  const CircularButtonAtom({required this.icon, required this.onTap, required this.size, super.key});
   final Widget icon;
   final VoidCallback onTap;
   final double size;
-
-  const CircularButtonAtom({Key? key, required this.icon, required this.onTap, required this.size}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

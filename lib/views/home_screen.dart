@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:music_player/core/constants/color_constants.dart';
 import 'package:music_player/core/constants/string_constants.dart';
 import 'package:music_player/utils/helper_functions.dart';
+import 'package:music_player/viewmodel/song_view_model.dart';
+import 'package:music_player/views/control_panel_screen.dart';
 import 'package:music_player/widgets/app_text.dart';
+import 'package:music_player/widgets/song_listview_widget.dart';
 import 'package:provider/provider.dart';
-
-import '../viewmodel/song_view_model.dart';
-import '../widgets/song_listview_widget.dart';
-import 'control_panel_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   HomeScreenState createState() => HomeScreenState();
@@ -36,7 +35,6 @@ class HomeScreenState extends State<HomeScreen> {
       backgroundColor: ColorConstants.background,
       body: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
               padding: const EdgeInsets.only(left: 8, right: 8, top: 16),
@@ -52,15 +50,15 @@ class HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: Consumer<SongViewModel>(
                 builder: (context, viewmodel, child) {
-                  if (viewmodel.state == SongFetchState.LOADING) {
+                  if (viewmodel.state == SongFetchState.loading) {
                     return const Center(
                       child: CircularProgressIndicator(),
                     );
-                  } else if (viewmodel.state == SongFetchState.LOADED && viewmodel.songInfos.isEmpty) {
+                  } else if (viewmodel.state == SongFetchState.loaded && viewmodel.songInfos.isEmpty) {
                     return const Center(
                       child: AppText(text: StringConstants.noSongData),
                     );
-                  } else if (viewmodel.state == SongFetchState.PERMISSION_DENIED) {
+                  } else if (viewmodel.state == SongFetchState.permissionDenied) {
                     return const Center(
                       child: AppText(text: StringConstants.allowMediaPermission),
                     );
@@ -84,24 +82,24 @@ class HomeScreenState extends State<HomeScreen> {
         SubmenuButton(
           controller: menuController,
           menuStyle: const MenuStyle(
-            padding: MaterialStatePropertyAll(
+            padding: WidgetStatePropertyAll(
               EdgeInsets.symmetric(horizontal: 8),
             ),
           ),
           style: const ButtonStyle(
-            overlayColor: MaterialStatePropertyAll(Colors.transparent),
-            minimumSize: MaterialStatePropertyAll(Size.fromHeight(32)),
-            padding: MaterialStatePropertyAll(EdgeInsets.zero),
+            overlayColor: WidgetStatePropertyAll(Colors.transparent),
+            minimumSize: WidgetStatePropertyAll(Size.fromHeight(32)),
+            padding: WidgetStatePropertyAll(EdgeInsets.zero),
           ),
           menuChildren: [
             TextButton(
               onPressed: () async {
                 menuController.close();
-                await HelperFunctions.instance.openPrivacyPolicyUrl();
+                await HelperFunctions.openPrivacyPolicyUrl();
               },
               style: const ButtonStyle(
-                overlayColor: MaterialStatePropertyAll(ColorConstants.cardColor),
-                padding: MaterialStatePropertyAll(EdgeInsets.symmetric(horizontal: 8)),
+                overlayColor: WidgetStatePropertyAll(ColorConstants.cardColor),
+                padding: WidgetStatePropertyAll(EdgeInsets.symmetric(horizontal: 8)),
               ),
               child: const AppText(text: StringConstants.privacyPolicy),
             ),
@@ -109,7 +107,7 @@ class HomeScreenState extends State<HomeScreen> {
           child: const AppText(
             text: StringConstants.about,
           ),
-        )
+        ),
       ],
     );
   }
@@ -126,7 +124,7 @@ class _ShuffleButton extends StatelessWidget {
         final randIndex = context.read<SongViewModel>().shuffleSongIndex();
         if (randIndex == null) return;
         safeContext.push(
-          MaterialPageRoute(
+          MaterialPageRoute<void>(
             builder: (context) => ControlPanelView(
               songInfo: context.read<SongViewModel>().songInfos,
               selectedIndex: randIndex,

@@ -1,17 +1,15 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-
+import 'package:music_player/core/constants/asset_constants.dart';
+import 'package:music_player/core/extension/size_extension.dart';
+import 'package:music_player/viewmodel/song_view_model.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 
-import '../core/constants/asset_constants.dart';
-import '../core/extension/size_extension.dart';
-import '../viewmodel/song_view_model.dart';
-
 class SongArtworkWidget extends StatelessWidget {
-  final AudioModel songInfo;
-  const SongArtworkWidget({Key? key, required this.songInfo}) : super(key: key);
+  const SongArtworkWidget({required this.songInfo, super.key});
+  final SongModel songInfo;
 
   @override
   Widget build(BuildContext context) {

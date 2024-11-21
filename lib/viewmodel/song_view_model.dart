@@ -5,23 +5,23 @@ import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 enum SongFetchState {
-  INIT,
-  LOADING,
-  LOADED,
-  PERMISSION_DENIED,
+  initial,
+  loading,
+  loaded,
+  permissionDenied,
 }
 
 class SongViewModel extends ChangeNotifier {
-  List<AudioModel> songInfos = [];
+  List<SongModel> songInfos = [];
   final OnAudioQuery _audioQuery = OnAudioQuery();
-  SongFetchState _state = SongFetchState.INIT;
+  SongFetchState _state = SongFetchState.initial;
 
-  set state(val) {
-    _state = val;
+  set state(SongFetchState state) {
+    _state = state;
     notifyListeners();
   }
 
-  get state => _state;
+  SongFetchState get state => _state;
 
   Future<bool> _requestAudioPermissionIfNeeded() async {
     final ifNeeded = await _audioQuery.permissionsStatus();
@@ -31,32 +31,32 @@ class SongViewModel extends ChangeNotifier {
   }
 
   Future<void> fetchSongs() async {
-    state = SongFetchState.LOADING;
+    state = SongFetchState.loading;
     final permission = await _requestAudioPermissionIfNeeded();
     if (permission) {
       songInfos = await _audioQuery.querySongs();
-      state = SongFetchState.LOADED;
+      state = SongFetchState.loaded;
     } else {
-      state = SongFetchState.PERMISSION_DENIED;
+      state = SongFetchState.permissionDenied;
     }
   }
 
   int? shuffleSongIndex() {
     if (songInfos.isEmpty) return null;
 
-    state = SongFetchState.LOADING;
+    state = SongFetchState.loading;
 
-    var rand = Random().nextInt(songInfos.length - 1);
-    state = SongFetchState.LOADED;
+    final rand = Random().nextInt(songInfos.length - 1);
+    state = SongFetchState.loaded;
     return rand;
   }
 
-  Future<File?> getAlbumArtwork(AudioModel audioModel) async {
+  Future<File?> getAlbumArtwork(SongModel audioModel) async {
     try {
       if (audioModel.albumId == null) return null;
       final artWork = await _audioQuery.queryArtwork(audioModel.albumId!, ArtworkType.ALBUM);
-      if (artWork?.artwork == null) return null;
-      return File.fromRawPath(artWork!.artwork!);
+      if (artWork == null) return null;
+      return File.fromRawPath(artWork);
     } catch (e) {
       return null;
     }
