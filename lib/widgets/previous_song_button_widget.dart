@@ -11,7 +11,7 @@ class PreviousSongButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircularButtonAtom(
       size: size,
-      icon: const Icon(Icons.skip_previous, color: ColorConstants.primaryLight),
+      icon: const Icon(Icons.skip_previous, color: ColorConstants.nyanza),
       onTap: onTap,
     );
   }

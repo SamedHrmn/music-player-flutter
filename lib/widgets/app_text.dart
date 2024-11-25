@@ -20,7 +20,7 @@ class AppText extends StatelessWidget {
         fontFamily: 'EvilEmpire',
         fontSize: size,
         fontWeight: fontWeight,
-        color: color ?? ColorConstants.primary,
+        color: color ?? ColorConstants.wine,
       ),
       maxLines: maxLines,
     );

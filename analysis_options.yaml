@@ -26,6 +26,8 @@ linter:
       public_member_api_docs: false
       lines_longer_than_80_chars: false
       sort_pub_dependencies: false
+      sort_constructors_first: false
+      sort_unnamed_constructors_first: false
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

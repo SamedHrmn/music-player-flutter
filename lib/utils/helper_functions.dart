@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'package:music_player/core/constants/string_constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class HelperFunctions {
+final class HelperFunctions {
   static String parseToMinutesSeconds(int ms) {
     String data;
     final duration = Duration(milliseconds: ms);
