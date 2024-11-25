@@ -5,4 +5,5 @@ mixin class StringConstants {
   static const String about = 'About';
   static const String privacyPolicy = 'Privacy Policy';
   static const String privacyPolicyUrl = 'https://github.com/SamedHrmn/music-player-flutter/blob/master/PRIVACY_POLICY.md';
+  static const String errorGeneral = 'Something went wrong.';
 }

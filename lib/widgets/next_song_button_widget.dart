@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:music_player/core/components/circular_button_atom.dart';
 import 'package:music_player/core/constants/color_constants.dart';
 
-import '../core/components/circular_button_atom.dart';
-
 class NextSongButtonWidget extends StatelessWidget {
+  const NextSongButtonWidget({required this.onTap, required this.size, super.key});
   final VoidCallback onTap;
-  final double size;
-
-  const NextSongButtonWidget({Key? key, required this.onTap, required this.size}) : super(key: key);
+  final double? size;
 
   @override
   Widget build(BuildContext context) {
     return CircularButtonAtom(
       size: size,
-      icon: const Icon(Icons.skip_next, color: ColorConstants.primaryLight),
+      icon: const Icon(Icons.skip_next, color: ColorConstants.nyanza),
       onTap: onTap,
     );
   }

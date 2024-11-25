@@ -3,7 +3,7 @@ import 'package:music_player/core/constants/color_constants.dart';
 import 'package:volume_controller/volume_controller.dart';
 
 class VolumeControlWidget extends StatefulWidget {
-  const VolumeControlWidget({Key? key}) : super(key: key);
+  const VolumeControlWidget({super.key});
 
   @override
   _VolumeControlWidgetState createState() => _VolumeControlWidgetState();
@@ -41,10 +41,8 @@ class _VolumeControlWidgetState extends State<VolumeControlWidget> {
               ),
             ),
             child: Slider(
-              activeColor: ColorConstants.secondary,
-              inactiveColor: Colors.white30,
-              min: 0,
-              max: 1,
+              activeColor: ColorConstants.lapisLazuli,
+              inactiveColor: ColorConstants.nyanza,
               onChanged: (double value) {
                 setState(() {
                   _setVolumeValue = value;
@@ -73,7 +71,7 @@ class _VolumeControlWidgetState extends State<VolumeControlWidget> {
           },
           icon: Icon(
             _setVolumeValue == 0 ? Icons.volume_off_rounded : Icons.volume_up_rounded,
-            color: ColorConstants.secondary,
+            color: ColorConstants.lapisLazuli,
           ),
         ),
       ],
